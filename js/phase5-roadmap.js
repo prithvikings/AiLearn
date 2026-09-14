@@ -11,7 +11,8 @@ const roadmapLevels = [
   ['AI Agents & Tools', 'Learn systems that can choose actions and use tools.'],
   ['Agent Memory & Planning', 'Explore state, memory, planning, retries and longer-horizon tasks.'],
   ['MCP', 'Standardize how AI applications discover and interact with capabilities.'],
-  ['Agent Orchestration', 'Coordinate multiple agents, tools, workflows, and AI components.']
+  ['Agent Orchestration', 'Coordinate multiple agents, tools, workflows, and AI components.'],
+  ['Advanced Agentic AI', 'Explore evaluation, reliability, guardrails, observability and production AI systems.']
 ];
 
 function render() {
