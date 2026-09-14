@@ -8,8 +8,8 @@ const roadmapLevels = [
   ['Open Source & Local AI', 'Explore model weights, local inference and hardware.'],
   ['Embeddings & Vector Search', 'Turn text into numerical representations for semantic search.'],
   ['Retrieval-Augmented Generation', 'Connect generation to selected external knowledge.'],
-  ['AI Agents & Tools', 'Prepare for systems that can choose actions and use tools.'],
-  ['Advanced Agent Systems', 'Design more capable multi-step agent workflows.'],
+  ['AI Agents & Tools', 'Learn systems that can choose actions and use tools.'],
+  ['Agent Memory & Planning', 'Explore state, memory, planning, retries and longer-horizon tasks.'],
   ['MCP & Orchestration', 'Connect capabilities and coordinate multi-step AI systems.']
 ];
 
