@@ -10,7 +10,8 @@ const roadmapLevels = [
   ['Retrieval-Augmented Generation', 'Connect generation to selected external knowledge.'],
   ['AI Agents & Tools', 'Learn systems that can choose actions and use tools.'],
   ['Agent Memory & Planning', 'Explore state, memory, planning, retries and longer-horizon tasks.'],
-  ['MCP & Orchestration', 'Connect capabilities and coordinate multi-step AI systems.']
+  ['MCP', 'Standardize how AI applications discover and interact with capabilities.'],
+  ['Agent Orchestration', 'Coordinate multiple agents, tools, workflows, and AI components.']
 ];
 
 function render() {
