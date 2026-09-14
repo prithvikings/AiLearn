@@ -7,9 +7,9 @@ const roadmapLevels = [
   ['LLM Applications', 'Learn API basics and build with language models.'],
   ['Open Source & Local AI', 'Explore model weights, local inference and hardware.'],
   ['Embeddings & Vector Search', 'Turn text into numerical representations for semantic search.'],
-  ['RAG', 'Connect models to external knowledge.'],
-  ['Tools', 'Give AI applications access to useful capabilities.'],
-  ['Agents', 'Design systems that can reason and use tools.'],
+  ['Retrieval-Augmented Generation', 'Connect generation to selected external knowledge.'],
+  ['AI Agents & Tools', 'Prepare for systems that can choose actions and use tools.'],
+  ['Advanced Agent Systems', 'Design more capable multi-step agent workflows.'],
   ['MCP & Orchestration', 'Connect capabilities and coordinate multi-step AI systems.']
 ];
 
