@@ -19,6 +19,7 @@ function renderStats() {
   const title = ['Beginner Explorer', 'AI Learner', 'AI Builder', 'AI Engineer'][Math.min(state.level - 1, 3)];
   const totalMissionCount = foundationLessons.length + levelTwoLessons.length;
   const completedMissionCount = allLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
+  const llmCompleted = levelTwoLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
   $('#header-xp').textContent = `${state.xp} XP`;
   $('#level-value').textContent = state.level;
   $('#rank-value').textContent = title;
@@ -29,7 +30,7 @@ function renderStats() {
   $('#xp-bar').style.width = `${progress.percent}%`;
   $('#hero-progress').textContent = `${Math.round((completedMissionCount / totalMissionCount) * 100)}%`;
   $('#foundation-count').textContent = `${foundationLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length} / ${foundationLessons.length}`;
-  $('#llm-count').textContent = `${llmLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length} / ${llmLessons.length}`;
+  $('#llm-count').textContent = `${llmCompleted} / ${levelTwoLessons.length}`;
 }
 
 function renderRoadmap() {
@@ -52,11 +53,12 @@ function renderFoundationLessons() {
 
 function renderLlmLessons() {
   const unlocked = isLevelUnlocked(state, 2);
-  const completed = llmLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
-  const percent = Math.round((completed / llmLessons.length) * 100);
+  const completed = levelTwoLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
+  const percent = Math.round((completed / levelTwoLessons.length) * 100);
+  const previousMissionsComplete = llmLessons.every((lesson) => state.completedLessons.includes(lesson.id));
   $('#llm-progress-bar').style.width = `${percent}%`;
   $('#llm-progress-percent').textContent = `${percent}%`;
-  $('#llm-list').innerHTML = levelTwoLessons.map((lesson, index) => lessonCard(lesson, index, !unlocked)).join('');
+  $('#llm-list').innerHTML = levelTwoLessons.map((lesson, index) => lessonCard(lesson, index, !unlocked || (lesson.type === 'final' && !previousMissionsComplete))).join('');
   $('#llm-locked-note').hidden = unlocked;
   document.querySelector('.llm-section').classList.toggle('is-locked', !unlocked);
 }
@@ -70,7 +72,7 @@ function renderAchievements() {
 
 function openLesson(id) {
   activeLesson = allLessons.find((lesson) => lesson.id === id);
-  if (!activeLesson || (activeLesson.id.startsWith('llm-') && !isLevelUnlocked(state, 2)) || (activeLesson.type === 'final' && !isLevelUnlocked(state, 2))) return;
+  if (!activeLesson || (activeLesson.id.startsWith('llm-') && !isLevelUnlocked(state, 2)) || (activeLesson.type === 'final' && (!isLevelUnlocked(state, 2) || !llmLessons.every((lesson) => state.completedLessons.includes(lesson.id))))) return;
   selectedAnswer = null; generationIndex = 0;
   $('#modal-title').textContent = activeLesson.title;
   $('#modal-description').textContent = activeLesson.description;
@@ -107,9 +109,7 @@ function buildInteraction(lesson) {
 }
 
 function buildQuiz(lesson) { return `<h3>🧠 Quick check</h3><p>${lesson.quiz.question}</p><div class="quiz-options">${lesson.quiz.options.map((option, i) => `<button class="quiz-option" data-answer="${i}">${option}</button>`).join('')}</div><div class="quiz-feedback" id="quiz-feedback" aria-live="polite"></div>`; }
-
 function buildFinalChallenge(challenge) { return `<div class="final-challenge"><div class="challenge-header"><span>FINAL BOSS</span><strong>70% to pass</strong></div><p class="challenge-intro">10 questions across tokens, embeddings, attention, prediction, parameters and sampling.</p><div id="final-questions">${challenge.questions.map((question, index) => buildFinalQuestion(question, index)).join('')}</div><button class="primary-button" id="submit-final">Submit challenge</button><div id="final-result" class="final-result" aria-live="polite"></div></div>`; }
-
 function buildFinalQuestion(question, index) {
   if (question.type === 'short') return `<fieldset class="final-question" data-final-index="${index}"><legend>${index + 1}. ${question.question}</legend><input class="short-answer" data-final-short type="text" placeholder="Example: It predicts the next token..." aria-label="Short answer"></fieldset>`;
   if (question.type === 'order') return `<fieldset class="final-question" data-final-index="${index}"><legend>${index + 1}. ${question.question}</legend><p class="question-note">Use the controls to move each step into order.</p><div class="order-list">${question.order.map((item, i) => `<button type="button" class="order-item" data-order-item="${i}">${i + 1}. ${item}</button>`).join('')}</div></fieldset>`;
@@ -161,7 +161,7 @@ function renderSampling() {
   const normalized = candidates.map(([token, value]) => [token, value / sum]).sort((a, b) => b[1] - a[1]);
   const topK = normalized.slice(0, k); let cumulative = 0; const topP = [];
   for (const candidate of normalized) { if (cumulative < p) { topP.push(candidate); cumulative += candidate[1]; } }
-  const allowed = new Set(topP.map(([token]) => token).filter((_, index) => index < k));
+  const allowed = new Set(topP.map(([token]) => token).filter((_, index) => index < topK.length));
   $('#sampling-bars').innerHTML = normalized.map(([token, probability]) => `<div class="prob-row ${allowed.has(token) ? 'candidate-active' : ''}"><span>${token}</span><div><i style="width:${Math.max(2, probability * 100)}%"></i></div><strong>${Math.round(probability * 100)}%</strong></div>`).join('');
   $('#sampling-explanation').innerHTML = `<strong>What changes?</strong> ${temperature < 0.5 ? 'Low temperature concentrates the distribution.' : temperature > 0.9 ? 'High temperature spreads probability more broadly.' : 'Medium temperature keeps a balance.'} Top-k keeps <strong>${k}</strong> candidates. Top-p keeps candidates until their cumulative probability reaches about <strong>${Math.round(p * 100)}%</strong>.`;
 }
