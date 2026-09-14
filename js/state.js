@@ -7,7 +7,8 @@ export const DEFAULT_STATE = {
   completedLessons: [],
   achievements: [],
   unlockedLevels: [1],
-  completedLevels: []
+  completedLevels: [],
+  challengeScores: {}
 };
 
 export function loadState() {
@@ -20,17 +21,24 @@ export function loadState() {
       completedLessons: Array.isArray(saved.completedLessons) ? saved.completedLessons : [],
       achievements: Array.isArray(saved.achievements) ? saved.achievements : [],
       unlockedLevels: Array.isArray(saved.unlockedLevels) ? saved.unlockedLevels : [1],
-      completedLevels: Array.isArray(saved.completedLevels) ? saved.completedLevels : []
+      completedLevels: Array.isArray(saved.completedLevels) ? saved.completedLevels : [],
+      challengeScores: saved.challengeScores && typeof saved.challengeScores === 'object' ? saved.challengeScores : {}
     };
     if (!state.unlockedLevels.includes(1)) state.unlockedLevels.unshift(1);
     const foundationIds = ['ai', 'genai', 'llm', 'apps', 'usecases'];
+    const llmMissionIds = ['llm-01', 'llm-02', 'llm-03', 'llm-04', 'llm-05', 'llm-06', 'llm-07', 'llm-08'];
+    const promptMissionIds = ['prompt-01', 'prompt-02', 'prompt-03', 'prompt-04', 'prompt-05', 'prompt-06', 'prompt-07', 'prompt-08', 'prompt-09', 'prompt-10'];
     if (foundationIds.every((id) => state.completedLessons.includes(id))) {
-      if (!state.unlockedLevels.includes(2)) state.unlockedLevels.push(2);
-      if (!state.completedLevels.includes(1)) state.completedLevels.push(1);
+      unlockLevel(state, 2);
+      markLevelCompleted(state, 1);
     }
-    if (state.completedLessons.includes('llm-final')) {
-      if (!state.unlockedLevels.includes(3)) state.unlockedLevels.push(3);
-      if (!state.completedLevels.includes(2)) state.completedLevels.push(2);
+    if (llmMissionIds.every((id) => state.completedLessons.includes(id)) && state.completedLessons.includes('llm-final')) {
+      unlockLevel(state, 3);
+      markLevelCompleted(state, 2);
+    }
+    if (promptMissionIds.every((id) => state.completedLessons.includes(id))) {
+      unlockLevel(state, 4);
+      markLevelCompleted(state, 3);
     }
     return state;
   } catch {
@@ -79,10 +87,16 @@ export function markLevelCompleted(state, levelId) {
   if (!state.completedLevels.includes(levelId)) state.completedLevels.push(levelId);
 }
 
+export function recordChallengeScore(state, challengeId, score) {
+  state.challengeScores[challengeId] = score;
+}
+
 export function unlockAchievements(state, lessons) {
   const unlocked = [];
   const foundation = lessons.filter((lesson) => ['ai', 'genai', 'llm', 'apps', 'usecases'].includes(lesson.id));
   const llm = lessons.filter((lesson) => lesson.id.startsWith('llm-') && lesson.type !== 'final');
+  const prompt = lessons.filter((lesson) => lesson.id.startsWith('prompt-'));
+  const promptCompleted = prompt.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
   const checks = [
     ['first-step', state.completedLessons.length >= 1],
     ['curious-mind', state.completedLessons.length >= 3],
@@ -90,7 +104,12 @@ export function unlockAchievements(state, lessons) {
     ['token-tamer', state.completedLessons.includes('llm-03')],
     ['attention-seeker', state.completedLessons.includes('llm-05')],
     ['model-thinker', state.completedLessons.includes('llm-07')],
-    ['llm-initiate', llm.every((lesson) => state.completedLessons.includes(lesson.id)) && state.completedLessons.includes('llm-final')]
+    ['llm-initiate', llm.every((lesson) => state.completedLessons.includes(lesson.id)) && state.completedLessons.includes('llm-final')],
+    ['prompt-apprentice', promptCompleted >= 3],
+    ['context-master', state.completedLessons.includes('prompt-07')],
+    ['example-builder', state.completedLessons.includes('prompt-05')],
+    ['prompt-refiner', state.completedLessons.includes('prompt-08')],
+    ['prompt-engineer', prompt.every((lesson) => state.completedLessons.includes(lesson.id))]
   ];
   checks.forEach(([id, condition]) => {
     if (condition && !state.achievements.includes(id)) {
