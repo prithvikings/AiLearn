@@ -29,6 +29,7 @@ export function loadState() {
     const llmMissionIds = ['llm-01', 'llm-02', 'llm-03', 'llm-04', 'llm-05', 'llm-06', 'llm-07', 'llm-08'];
     const promptMissionIds = ['prompt-01', 'prompt-02', 'prompt-03', 'prompt-04', 'prompt-05', 'prompt-06', 'prompt-07', 'prompt-08', 'prompt-09', 'prompt-10'];
     const applicationMissionIds = ['app-01', 'app-02', 'app-03', 'app-04', 'app-05', 'app-06', 'app-07', 'app-08', 'app-09', 'app-10'];
+    const localAIMissionIds = ['local-01', 'local-02', 'local-03', 'local-04', 'local-05', 'local-06', 'local-07', 'local-08', 'local-09', 'local-10'];
     if (foundationIds.every((id) => state.completedLessons.includes(id))) {
       unlockLevel(state, 2);
       markLevelCompleted(state, 1);
@@ -44,6 +45,10 @@ export function loadState() {
     if (applicationMissionIds.every((id) => state.completedLessons.includes(id))) {
       unlockLevel(state, 5);
       markLevelCompleted(state, 4);
+    }
+    if (localAIMissionIds.every((id) => state.completedLessons.includes(id))) {
+      unlockLevel(state, 6);
+      markLevelCompleted(state, 5);
     }
     return state;
   } catch {
@@ -102,6 +107,7 @@ export function unlockAchievements(state, lessons) {
   const llm = lessons.filter((lesson) => lesson.id.startsWith('llm-') && lesson.type !== 'final');
   const prompt = lessons.filter((lesson) => lesson.id.startsWith('prompt-'));
   const application = lessons.filter((lesson) => lesson.id.startsWith('app-'));
+  const localAI = lessons.filter((lesson) => lesson.id.startsWith('local-'));
   const promptCompleted = prompt.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
   const checks = [
     ['first-step', state.completedLessons.length >= 1],
@@ -123,7 +129,17 @@ export function unlockAchievements(state, lessons) {
     ['stream-rider', state.completedLessons.includes('app-06')],
     ['llm-builder', state.completedLessons.includes('app-08')],
     ['request-debugger', state.completedLessons.includes('app-09')],
-    ['llm-application-architect', application.every((lesson) => state.completedLessons.includes(lesson.id))]
+    ['llm-application-architect', application.every((lesson) => state.completedLessons.includes(lesson.id))],
+    ['model-explorer', state.completedLessons.includes('local-01')],
+    ['open-weight-detective', state.completedLessons.includes('local-02')],
+    ['model-hub-navigator', state.completedLessons.includes('local-03')],
+    ['inference-initiate', state.completedLessons.includes('local-04')],
+    ['cloud-local-strategist', state.completedLessons.includes('local-05')],
+    ['hardware-scout', state.completedLessons.includes('local-06')],
+    ['quantization-explorer', state.completedLessons.includes('local-07')],
+    ['local-ai-explorer', state.completedLessons.includes('local-08')],
+    ['local-ai-builder', state.completedLessons.includes('local-09')],
+    ['open-source-ai-architect', state.completedLessons.includes('local-10')]
   ];
   checks.forEach(([id, condition]) => {
     if (condition && !state.achievements.includes(id)) {
