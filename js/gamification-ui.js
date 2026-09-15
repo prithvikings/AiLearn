@@ -32,10 +32,7 @@ function renderHome() {
   goal.className = `gamification-goal${daily.goalCompleted ? " is-complete" : ""}`;
   goal.setAttribute("aria-label", "Today's learning goal");
   goal.innerHTML = `<div class="gamification-goal-copy"><span class="gamification-goal-kicker">TODAY'S GOAL</span><strong>${daily.goalCompleted ? "Daily goal complete" : "Keep the momentum going"}</strong><small>${daily.goalCompleted ? `${daily.xp} / ${DAILY_XP_GOAL} XP earned · You can keep learning.` : `${Math.max(0, DAILY_XP_GOAL - daily.xp)} XP to go`}</small><div class="gamification-track" role="progressbar" aria-valuemin="0" aria-valuemax="${DAILY_XP_GOAL}" aria-valuenow="${Math.min(daily.xp, DAILY_XP_GOAL)}" aria-label="Today's XP goal"><span style="width:${Math.min(100, (daily.xp / DAILY_XP_GOAL) * 100)}%"></span></div></div><span class="gamification-goal-value">${daily.xp} / ${DAILY_XP_GOAL} XP</span>`;
-  if (!existingGoal) {
-    const status = $(".journey-status", mount);
-    if (status) status.after(goal);
-  }
+  if (!existingGoal) { const status = $(".journey-status", mount); if (status) status.after(goal); }
 
   const metrics = $(".journey-metrics", mount);
   if (metrics) {
@@ -43,17 +40,18 @@ function renderHome() {
     levelMetric.dataset.playerLevel = "true";
     levelMetric.innerHTML = `<strong>${state.level}</strong> player level`;
     if (!levelMetric.parentElement) metrics.prepend(levelMetric);
+    const achievementMetric = $("[data-achievements]", metrics) || document.createElement("span");
+    achievementMetric.dataset.achievements = "true";
+    achievementMetric.innerHTML = `<strong>🏆 ${state.achievements.length}</strong> milestones`;
+    if (!achievementMetric.parentElement) metrics.appendChild(achievementMetric);
   }
 
   const existingLevel = $(".player-level-card", mount);
   const levelCard = existingLevel || document.createElement("section");
   levelCard.className = "player-level-card";
   levelCard.setAttribute("aria-label", `Player level ${state.level}`);
-  levelCard.innerHTML = `<span class="player-level-number">${state.level}</span><div class="player-level-copy"><span>PLAYER LEVEL</span><strong>${progress.current.toLocaleString()} / ${progress.total.toLocaleString()} XP</strong><small>${Math.max(0, progress.total - progress.current)} XP to Level ${state.level + 1}</small><div class="player-level-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progress.percent)}" aria-label="Progress to next player level"><span style="width:${progress.percent}%"></span></div></div>`;
-  if (!existingLevel) {
-    const goalSection = $(".gamification-goal", mount);
-    if (goalSection) goalSection.after(levelCard);
-  }
+  levelCard.innerHTML = `<span class="player-level-number">${state.level}</span><div class="player-level-copy"><span>PLAYER LEVEL</span><strong>${progress.max ? `${state.xp.toLocaleString()} XP · MAX LEVEL` : `${progress.current.toLocaleString()} / ${progress.total.toLocaleString()} XP`}</strong><small>${progress.max ? "You've reached the current player-level cap." : `${Math.max(0, progress.total - progress.current)} XP to Level ${state.level + 1}`}</small><div class="player-level-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(progress.percent)}" aria-label="Progress to next player level"><span style="width:${progress.percent}%"></span></div></div>`;
+  if (!existingLevel) { const goalSection = $(".gamification-goal", mount); if (goalSection) goalSection.after(levelCard); }
 
   lastLevel = state.level;
   lastAchievements = new Set(state.achievements);
@@ -89,7 +87,7 @@ function showMissionReward(detail) {
       let summary = $(".gamification-reward", card);
       if (!summary) { summary = document.createElement("div"); summary.className = "gamification-reward"; card.appendChild(summary); }
       const levelProgress = getLevelProgress(state.xp);
-      summary.innerHTML = `<div class="gamification-reward-head"><strong>REWARD SUMMARY</strong><span class="gamification-xp-earned">+${reward} XP</span></div><div class="gamification-reward-grid"><div class="gamification-reward-stat"><span>Daily goal</span><strong>${Math.min(daily.xp, DAILY_XP_GOAL)} / ${DAILY_XP_GOAL} XP${daily.goalCompleted ? " · Complete" : ""}</strong></div><div class="gamification-reward-stat"><span>Streak</span><strong>🔥 ${state.streak} day${state.streak === 1 ? "" : "s"}</strong></div><div class="gamification-reward-stat"><span>Player level</span><strong>Level ${state.level}${levelledUp ? " · Level up" : ""}</strong></div></div>${levelledUp ? `<div class="gamification-milestone" role="status">Level increased to ${state.level}. ${levelProgress.current} / ${levelProgress.total} XP toward the next level.</div>` : ""}${daily.goalCompleted ? `<div class="gamification-milestone" role="status">Daily goal complete — ${daily.xp} XP earned today. You can keep learning.</div>` : ""}${milestoneText.map((item) => `<div class="gamification-milestone" role="status">Milestone unlocked: ${item}</div>`).join("")}`;
+      summary.innerHTML = `<div class="gamification-reward-head"><strong>REWARD SUMMARY</strong><span class="gamification-xp-earned">+${reward} XP</span></div><div class="gamification-reward-grid"><div class="gamification-reward-stat"><span>Daily goal</span><strong>${Math.min(daily.xp, DAILY_XP_GOAL)} / ${DAILY_XP_GOAL} XP${daily.goalCompleted ? " · Complete" : ""}</strong></div><div class="gamification-reward-stat"><span>Streak</span><strong>🔥 ${state.streak} day${state.streak === 1 ? "" : "s"}</strong></div><div class="gamification-reward-stat"><span>Player level</span><strong>Level ${state.level}${levelledUp ? " · Level up" : ""}</strong></div></div>${levelledUp ? `<div class="gamification-milestone" role="status">Level increased to ${state.level}. ${levelProgress.max ? "Current level cap reached." : `${levelProgress.current} / ${levelProgress.total} XP toward the next level.`}</div>` : ""}${daily.goalCompleted ? `<div class="gamification-milestone" role="status">Daily goal complete — ${daily.xp} XP earned today. You can keep learning.</div>` : ""}${milestoneText.map((item) => `<div class="gamification-milestone" role="status">Milestone unlocked: ${item}</div>`).join("")}`;
     }
   } else {
     showRewardToast(state, reward, levelledUp, milestoneText);
@@ -103,10 +101,7 @@ function init() {
   renderHome();
   setTimeout(renderHome, 0);
   window.addEventListener("ailearn-state-updated", renderHome);
-  window.addEventListener("ailearn-gamification-updated", (event) => {
-    showMissionReward(event.detail || {});
-    renderHome();
-  });
+  window.addEventListener("ailearn-gamification-updated", (event) => { showMissionReward(event.detail || {}); renderHome(); });
 }
 
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
