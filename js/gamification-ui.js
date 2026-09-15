@@ -42,7 +42,8 @@ function renderHome() {
     if (!levelMetric.parentElement) metrics.prepend(levelMetric);
     const achievementMetric = $("[data-achievements]", metrics) || document.createElement("span");
     achievementMetric.dataset.achievements = "true";
-    achievementMetric.innerHTML = `<strong>🏆 ${state.achievements.length}</strong> milestones`;
+    const milestoneCount = state.achievements.filter((id) => id.startsWith("milestone-")).length;
+    achievementMetric.innerHTML = `<strong>🏆 ${milestoneCount}</strong> milestones`;
     if (!achievementMetric.parentElement) metrics.appendChild(achievementMetric);
   }
 
