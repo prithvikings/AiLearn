@@ -1,4 +1,4 @@
-import { curriculumLevels, curriculumLevelById, allLessons, getCurriculumLevel } from "./curriculum-canonical.js";
+import { curriculumLevels, curriculumLevelById, allLessons, getCurriculumLevel } from "./curriculum-registry.js";
 import { evaluateMeaningfulAchievements } from "./achievements.js";
 import { calculateLevel, getLevelProgress, isLevelUnlocked } from "./state.js";
 
