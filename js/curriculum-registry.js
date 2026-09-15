@@ -24,11 +24,30 @@ const lessonGroups = [
   phase12Lessons,
 ];
 
-export const curriculumLevels = levels.map((level, index) => ({
-  ...level,
+const CANONICAL_METADATA = [
+  [1, "AI Foundations", "Build your mental model of AI."],
+  [2, "LLM Fundamentals", "Tokens, embeddings, attention & prediction."],
+  [3, "Prompt Engineering", "Learn to communicate with models effectively."],
+  [4, "LLM Applications", "Learn API basics and build with language models."],
+  [5, "Open Source & Local AI", "Explore model weights, local inference and hardware."],
+  [6, "Embeddings & Vector Search", "Turn text into numerical representations for semantic search."],
+  [7, "Retrieval-Augmented Generation", "Connect generation to selected external knowledge."],
+  [8, "AI Agents & Tools", "Learn systems that can choose actions and use tools."],
+  [9, "Agent Memory & Planning", "Explore state, memory, planning, retries and longer-horizon tasks."],
+  [10, "MCP", "Standardize how AI applications discover and interact with capabilities."],
+  [11, "Agent Orchestration", "Coordinate multiple agents, tools, workflows, and AI components."],
+  [12, "Advanced Agentic AI", "Explore evaluation, reliability, guardrails, observability and production AI systems."],
+];
+
+export const curriculumLevels = CANONICAL_METADATA.map(([id, title, description], index) => ({
+  ...levels[id - 1],
+  id,
+  title,
+  description,
+  unlocked: id === 1,
   lessons: lessonGroups[index] || [],
 }));
 
 export const curriculumLevelById = Object.fromEntries(curriculumLevels.map((level) => [level.id, level]));
 export const allLessons = curriculumLevels.flatMap((level) => level.lessons);
-export const getCurriculumLevel = (levelId) => curriculumLevelById[levelId] || null;
+export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
