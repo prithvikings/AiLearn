@@ -2,7 +2,16 @@ const $ = (selector) => document.querySelector(selector);
 
 const getMissionLists = () => [...document.querySelectorAll('.lesson-list')];
 
-function missionButton(list) {
+function ensureConfettiLayer() {
+  if ($('#confetti-layer')) return;
+  const layer = document.createElement('div');
+  layer.id = 'confetti-layer';
+  layer.className = 'confetti-layer';
+  layer.setAttribute('aria-hidden', 'true');
+  document.body.append(layer);
+}
+
+function missionButton() {
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'view-more-button';
@@ -13,16 +22,15 @@ function missionButton(list) {
 
 function applyProgressiveDisclosure() {
   getMissionLists().forEach((list) => {
-    if (list.dataset.progressiveReady === 'true') return;
     const cards = [...list.querySelectorAll('.lesson-card')];
     if (cards.length <= 3) return;
+    const existing = list.nextElementSibling;
+    if (existing?.classList.contains('mission-reveal')) return;
 
-    list.dataset.progressiveReady = 'true';
     list.classList.add('missions-collapsed');
-
     const wrapper = document.createElement('div');
     wrapper.className = 'mission-reveal';
-    const button = missionButton(list);
+    const button = missionButton();
     wrapper.append(button);
     list.insertAdjacentElement('afterend', wrapper);
 
@@ -41,12 +49,15 @@ function syncCurrentMission() {
   const current = [...document.querySelectorAll('.lesson-card')].find(
     (card) => !card.classList.contains('completed') && !card.classList.contains('locked'),
   );
+  document.querySelectorAll('.lesson-card.current-mission').forEach((card) => card.classList.remove('current-mission'));
   if (!current) return;
+
   const title = current.querySelector('h3')?.textContent?.trim();
-  const button = $('#hero-current-mission');
-  const meta = $('#hero-mission-meta');
-  if (button && title) button.textContent = title;
-  if (meta) meta.textContent = current.querySelector('.tag.xp')?.textContent || 'Continue your path.';
+  const heroMission = $('.hero-progress');
+  const heroTitle = heroMission?.querySelector('strong');
+  const heroMeta = heroMission?.querySelector('.muted.small');
+  if (heroTitle && title) heroTitle.textContent = title;
+  if (heroMeta) heroMeta.textContent = current.querySelector('.tag.xp')?.textContent || 'Continue your path.';
   current.classList.add('current-mission');
 }
 
@@ -63,12 +74,11 @@ function syncFoundationProgress() {
 
 function celebrate() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  ensureConfettiLayer();
   const layer = $('#confetti-layer');
-  if (!layer) return;
   layer.replaceChildren();
   const fragment = document.createDocumentFragment();
-  const count = 34;
-  for (let i = 0; i < count; i += 1) {
+  for (let i = 0; i < 34; i += 1) {
     const piece = document.createElement('span');
     piece.className = 'confetti-piece';
     piece.style.left = `${35 + Math.random() * 30}%`;
@@ -82,27 +92,31 @@ function celebrate() {
   window.setTimeout(() => layer.replaceChildren(), 1200);
 }
 
-function patchRewardCelebration() {
-  if (typeof window.showReward !== 'function' || window.showReward.__premiumPatched) return;
-  const original = window.showReward;
-  const wrapped = (...args) => {
-    original(...args);
-    celebrate();
-  };
-  wrapped.__premiumPatched = true;
-  window.showReward = wrapped;
+let previousCompleted = null;
+function detectCompletion() {
+  try {
+    const raw = localStorage.getItem('aiLearnState');
+    if (!raw) return;
+    const state = JSON.parse(raw);
+    const count = Array.isArray(state.completedLessons) ? state.completedLessons.length : 0;
+    if (previousCompleted !== null && count > previousCompleted) celebrate();
+    previousCompleted = count;
+  } catch {
+    // Presentation layer must never interrupt the learning app.
+  }
 }
 
 function refresh() {
   window.setTimeout(() => {
+    ensureConfettiLayer();
     applyProgressiveDisclosure();
     syncCurrentMission();
     syncFoundationProgress();
-    patchRewardCelebration();
+    detectCompletion();
   }, 0);
 }
 
 const observer = new MutationObserver(refresh);
 observer.observe(document.body, { childList: true, subtree: true });
-
+window.addEventListener('ailearn-state-updated', refresh);
 window.setTimeout(refresh, 0);
