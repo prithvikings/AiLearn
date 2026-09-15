@@ -1,0 +1,4 @@
+.celebration-confetti:nth-child(4n+1){background:var(--accent)}
+.celebration-confetti:nth-child(4n+2){background:var(--accent-2)}
+.celebration-confetti:nth-child(4n+3){background:var(--success)}
+.celebration-confetti:nth-child(4n){background:#d49a68}
