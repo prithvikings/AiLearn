@@ -7,8 +7,8 @@ const LEVEL_NAMES = [
   ["local-ai-", "Open Source & Local AI"],
   ["embedding-", "Embeddings & Vector Search"],
   ["rag-", "Retrieval-Augmented Generation"],
-  ["agent-", "AI Agents & Tools"],
   ["agent9-", "Agent Memory & Planning"],
+  ["agent-", "AI Agents & Tools"],
   ["mcp-", "MCP"],
   ["orch-", "Agent Orchestration"],
   ["advanced-", "Advanced Agentic AI"],
@@ -368,9 +368,16 @@ function onModalClose() {
   const modal = $("#lesson-modal");
   if (!modal || !modal.hidden) return;
   document.body.classList.remove("mission-open");
-  if (trigger && document.contains(trigger)) {
-    trigger.focus({ preventScroll: true });
-  }
+  const journeyTrigger = activeId
+    ? document.querySelector(
+        `[data-journey-lesson="${CSS.escape(activeId)}"]`,
+      )
+    : null;
+  const returnTarget =
+    trigger && document.contains(trigger) && trigger.offsetParent !== null
+      ? trigger
+      : journeyTrigger;
+  if (returnTarget) returnTarget.focus({ preventScroll: true });
   trigger = null;
   activeId = null;
   completionShown = false;
