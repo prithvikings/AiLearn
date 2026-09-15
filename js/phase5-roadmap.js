@@ -1,6 +1,6 @@
 import { loadState, isLevelUnlocked } from "./state.js";
 
-const roadmapLevels = [
+export const roadmapLevels = [
   ["AI Foundations", "Build your mental model of AI."],
   ["LLM Fundamentals", "Tokens, embeddings, attention & prediction."],
   ["Prompt Engineering", "Learn to communicate with models effectively."],
