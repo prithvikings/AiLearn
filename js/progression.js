@@ -1,9 +1,8 @@
-import { curriculumLevels, curriculumLevelById, allCurriculumLessons, getCurriculumLevel } from "./curriculum-model.js";
+import { curriculumLevels, curriculumLevelById, allLessons, getCurriculumLevel } from "./curriculum-canonical.js";
 import { evaluateMeaningfulAchievements } from "./achievements.js";
 import { calculateLevel, getLevelProgress, isLevelUnlocked } from "./state.js";
 
-export { curriculumLevels, curriculumLevelById, allCurriculumLessons };
-export const allLessons = allCurriculumLessons;
+export { curriculumLevels, curriculumLevelById, allLessons, getCurriculumLevel };
 
 export function getPlayerLevel(state) { return state.level ?? calculateLevel(state.xp); }
 export function getXpProgress(state) { return getLevelProgress(state.xp); }
