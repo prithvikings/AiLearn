@@ -2,6 +2,7 @@ import { loadState } from "./state.js";
 import "./journey.js";
 import "./gamification-ui.js";
 import "./celebration.js";
+import "../css/celebration.css";
 
 let signature = JSON.stringify(loadState());
 
