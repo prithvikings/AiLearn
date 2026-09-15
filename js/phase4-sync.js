@@ -1,6 +1,7 @@
 import { loadState } from "./state.js";
 import "./journey.js";
 import "./gamification-ui.js";
+import "./celebration.js";
 
 let signature = JSON.stringify(loadState());
 
