@@ -1,4 +1,5 @@
 import { loadState } from "./state.js";
+import "./journey.js";
 
 let signature = JSON.stringify(loadState());
 
