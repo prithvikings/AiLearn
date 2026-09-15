@@ -1,5 +1,5 @@
 import { loadState } from "./state.js";
-import { MEANINGFUL_ACHIEVEMENTS } from "./mastery.js";
+import { MEANINGFUL_ACHIEVEMENTS } from "./achievements.js";
 
 let previousIds = new Set();
 let previousLevel = 1;
@@ -16,7 +16,6 @@ function showAchievementToast(ids) {
   const title = document.querySelector("#reward-title");
   const copy = document.querySelector("#reward-copy");
   if (!toast || !title || !copy) return;
-
   const names = ids.map(titleFor);
   title.textContent = ids.length === 1 ? "Achievement Unlocked" : "Achievements Unlocked";
   copy.textContent = ids.length === 1 ? `◇ ${names[0]}` : `+${ids.length} achievements · ${names.slice(0, 2).join(" · ")}${names.length > 2 ? " · …" : ""}`;
