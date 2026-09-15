@@ -1,32 +1,21 @@
 import { loadState, saveState } from "./state.js";
-import { curriculumLevels, getCurriculumMastery, evaluateMeaningfulAchievements } from "./progression.js";
-import { MEANINGFUL_ACHIEVEMENTS } from "./achievements.js";
+import { curriculumLevels, getCurriculumMastery } from "./progression.js";
+import { evaluateMeaningfulAchievements, MEANINGFUL_ACHIEVEMENTS } from "./achievements.js";
 
 const $ = (selector, root = document) => root.querySelector(selector);
-const complete = (state, lesson) => state.completedLessons.includes(lesson.id);
 const escapeHtml = (value = "") => String(value).replace(/[&<>\"]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[char]);
 
 function masteryData(state) {
-  return curriculumLevels.map((level) => {
-    const completed = level.lessons.filter((lesson) => complete(state, lesson)).length;
-    const total = level.lessons.length;
-    return {
-      id: level.id,
-      title: level.title,
-      description: level.description,
-      completed,
-      total,
-      percent: total ? Math.round((completed / total) * 100) : 0,
-      unlocked: state.unlockedLevels.includes(level.id) || level.id === 1,
-      complete: total > 0 && completed === total,
-    };
-  });
+  return getCurriculumMastery(state).levels.map((level) => ({
+    ...level,
+    unlocked: state.unlockedLevels.includes(level.id) || level.id === 1,
+  }));
 }
 
 function syncMeaningfulAchievements() {
   const state = loadState();
   const mastery = masteryData(state);
-  const eligible = evaluateMeaningfulAchievements(state, { levels: mastery, allLessons: curriculumLevels.flatMap((level) => level.lessons) });
+  const eligible = evaluateMeaningfulAchievements(state, mastery);
   const newlyUnlocked = eligible.filter((id) => !state.achievements.includes(id));
   if (newlyUnlocked.length) {
     state.achievements.push(...newlyUnlocked);
