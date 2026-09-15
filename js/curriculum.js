@@ -1,16 +1,26 @@
+import { phase4Lessons } from "./phase4.js";
+import { phase5Lessons } from "./phase5.js";
+import { phase6Lessons } from "./phase6.js";
+import { phase7Lessons } from "./phase7.js";
+import { phase8Lessons } from "./phase8.js";
+import { phase9Lessons } from "./phase9.js";
+import { phase10Lessons } from "./phase10.js";
+import { phase11Lessons } from "./phase11.js";
+import { phase12Lessons } from "./phase12.js";
+
 export const levels = [
-  { id: 1, title: "AI Foundations", description: "Build your mental model of AI.", unlocked: true },
-  { id: 2, title: "LLM Fundamentals", description: "Tokens, embeddings, attention & prediction.", unlocked: false },
-  { id: 3, title: "Prompt Engineering", description: "Learn to communicate with models effectively.", unlocked: false },
-  { id: 4, title: "LLM Applications", description: "Learn API basics and build with language models.", unlocked: false },
-  { id: 5, title: "Open Source & Local AI", description: "Explore model weights, local inference and hardware.", unlocked: false },
-  { id: 6, title: "Embeddings & Vector Search", description: "Turn text into numerical representations for semantic search.", unlocked: false },
-  { id: 7, title: "Retrieval-Augmented Generation", description: "Connect generation to selected external knowledge.", unlocked: false },
-  { id: 8, title: "AI Agents & Tools", description: "Learn systems that can choose actions and use tools.", unlocked: false },
-  { id: 9, title: "Agent Memory & Planning", description: "Explore state, memory, planning, retries and longer-horizon tasks.", unlocked: false },
-  { id: 10, title: "MCP", description: "Standardize how AI applications discover and interact with capabilities.", unlocked: false },
-  { id: 11, title: "Agent Orchestration", description: "Coordinate multiple agents, tools, workflows, and AI components.", unlocked: false },
-  { id: 12, title: "Advanced Agentic AI", description: "Explore evaluation, reliability, guardrails, observability and production AI systems.", unlocked: false },
+  { id: 1, title: "AI Foundations", description: "Build your mental model of AI.", unlocked: true, lessons: null },
+  { id: 2, title: "LLM Fundamentals", description: "Tokens, embeddings, attention & prediction.", unlocked: false, lessons: null },
+  { id: 3, title: "Prompt Engineering", description: "Learn to communicate with models effectively.", unlocked: false, lessons: null },
+  { id: 4, title: "LLM Applications", description: "Learn API basics and build with language models.", unlocked: false, lessons: phase4Lessons },
+  { id: 5, title: "Open Source & Local AI", description: "Explore model weights, local inference and hardware.", unlocked: false, lessons: phase5Lessons },
+  { id: 6, title: "Embeddings & Vector Search", description: "Turn text into numerical representations for semantic search.", unlocked: false, lessons: phase6Lessons },
+  { id: 7, title: "Retrieval-Augmented Generation", description: "Connect generation to selected external knowledge.", unlocked: false, lessons: phase7Lessons },
+  { id: 8, title: "AI Agents & Tools", description: "Learn systems that can choose actions and use tools.", unlocked: false, lessons: phase8Lessons },
+  { id: 9, title: "Agent Memory & Planning", description: "Explore state, memory, planning, retries and longer-horizon tasks.", unlocked: false, lessons: phase9Lessons },
+  { id: 10, title: "MCP", description: "Standardize how AI applications discover and interact with capabilities.", unlocked: false, lessons: phase10Lessons },
+  { id: 11, title: "Agent Orchestration", description: "Coordinate multiple agents, tools, workflows, and AI components.", unlocked: false, lessons: phase11Lessons },
+  { id: 12, title: "Advanced Agentic AI", description: "Explore evaluation, reliability, guardrails, observability and production AI systems.", unlocked: false, lessons: phase12Lessons },
 ];
 
 export const foundationLessons = [
@@ -110,3 +120,10 @@ export const foundationLessons = [
     },
   },
 ];
+
+export const allCurriculumLessons = levels.flatMap((level) => {
+  if (level.id === 1) return foundationLessons;
+  if (level.id === 2) return [...llmLessons, finalChallenge];
+  if (level.id === 3) return promptLessons;
+  return level.lessons || [];
+});
