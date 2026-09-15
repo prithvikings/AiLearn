@@ -1,26 +1,52 @@
-import { phase4Lessons } from "./phase4.js";
-import { phase5Lessons } from "./phase5.js";
-import { phase6Lessons } from "./phase6.js";
-import { phase7Lessons } from "./phase7.js";
-import { phase8Lessons } from "./phase8.js";
-import { phase9Lessons } from "./phase9.js";
-import { phase10Lessons } from "./phase10.js";
-import { phase11Lessons } from "./phase11.js";
-import { phase12Lessons } from "./phase12.js";
-
 export const levels = [
-  { id: 1, title: "AI Foundations", description: "Build your mental model of AI.", unlocked: true, lessons: null },
-  { id: 2, title: "LLM Fundamentals", description: "Tokens, embeddings, attention & prediction.", unlocked: false, lessons: null },
-  { id: 3, title: "Prompt Engineering", description: "Learn to communicate with models effectively.", unlocked: false, lessons: null },
-  { id: 4, title: "LLM Applications", description: "Learn API basics and build with language models.", unlocked: false, lessons: phase4Lessons },
-  { id: 5, title: "Open Source & Local AI", description: "Explore model weights, local inference and hardware.", unlocked: false, lessons: phase5Lessons },
-  { id: 6, title: "Embeddings & Vector Search", description: "Turn text into numerical representations for semantic search.", unlocked: false, lessons: phase6Lessons },
-  { id: 7, title: "Retrieval-Augmented Generation", description: "Connect generation to selected external knowledge.", unlocked: false, lessons: phase7Lessons },
-  { id: 8, title: "AI Agents & Tools", description: "Learn systems that can choose actions and use tools.", unlocked: false, lessons: phase8Lessons },
-  { id: 9, title: "Agent Memory & Planning", description: "Explore state, memory, planning, retries and longer-horizon tasks.", unlocked: false, lessons: phase9Lessons },
-  { id: 10, title: "MCP", description: "Standardize how AI applications discover and interact with capabilities.", unlocked: false, lessons: phase10Lessons },
-  { id: 11, title: "Agent Orchestration", description: "Coordinate multiple agents, tools, workflows, and AI components.", unlocked: false, lessons: phase11Lessons },
-  { id: 12, title: "Advanced Agentic AI", description: "Explore evaluation, reliability, guardrails, observability and production AI systems.", unlocked: false, lessons: phase12Lessons },
+  {
+    id: 1,
+    title: "AI Foundations",
+    description: "Build your mental model of AI.",
+    unlocked: true,
+  },
+  {
+    id: 2,
+    title: "LLM Fundamentals",
+    description: "Tokens, embeddings, attention & prediction.",
+    unlocked: false,
+  },
+  {
+    id: 3,
+    title: "Prompt Engineering",
+    description: "Learn to communicate with models effectively.",
+    unlocked: false,
+  },
+  {
+    id: 4,
+    title: "LLM Applications",
+    description: "Learn API basics and build with language models.",
+    unlocked: false,
+  },
+  {
+    id: 5,
+    title: "RAG",
+    description: "Connect models to your own knowledge.",
+    unlocked: false,
+  },
+  {
+    id: 6,
+    title: "Agents",
+    description: "Models that reason and use tools.",
+    unlocked: false,
+  },
+  {
+    id: 7,
+    title: "MCP",
+    description: "A standard way to connect AI to tools and data.",
+    unlocked: false,
+  },
+  {
+    id: 8,
+    title: "Orchestration",
+    description: "Design reliable multi-step AI systems.",
+    unlocked: false,
+  },
 ];
 
 export const foundationLessons = [
@@ -121,15 +147,157 @@ export const foundationLessons = [
   },
 ];
 
-export const llmLessons = [];
-export const promptLessons = [];
-export const finalChallenge = { id: "llm-final", xp: 0, type: "final" };
+export const llmLessons = [
+  {
+    id: "llm-01",
+    title: "Tokenization",
+    description: "See how text becomes tokens before an LLM processes it.",
+    difficulty: "Beginner",
+    xp: 25,
+    type: "tokenizer",
+    objective: "Understand that models operate on token IDs rather than raw text.",
+    content: "<p>Language models receive token sequences. A tokenizer maps text into pieces such as words, subwords, punctuation, or whitespace patterns, depending on the tokenizer.</p>",
+    visual: ["I", "love", "building", "AI", "apps"],
+    quiz: { question: "What does a tokenizer do?", options: ["Turns text into tokens", "Creates database tables", "Chooses a GPU", "Stores model weights"], answer: 0 },
+  },
+  {
+    id: "llm-02",
+    title: "Embeddings",
+    description: "Understand how tokens are represented as vectors inside a model.",
+    difficulty: "Beginner",
+    xp: 25,
+    type: "embeddings",
+    objective: "See why tokens need numerical representations before neural network computation.",
+    content: "<p>Tokens are mapped into numerical vectors called embeddings. These vectors provide a continuous representation that downstream model layers can transform.</p>",
+    examples: ["cat", "dog", "car"],
+    quiz: { question: "What is an embedding?", options: ["A numerical vector representation", "A prompt template", "A database index", "A browser setting"], answer: 0 },
+  },
+  {
+    id: "llm-03",
+    title: "Attention",
+    description: "Explore how tokens can focus on other tokens in context.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "attention",
+    objective: "Build intuition for how attention connects context to relevant tokens.",
+    content: "<p>Attention lets a token weigh information from other tokens in the sequence. This helps a model use context when transforming representations.</p>",
+    visual: ["The", "chef", "added", "cheese", "to", "the", "pasta"],
+    quiz: { question: "What does attention help a model do?", options: ["Relate tokens using context", "Store files permanently", "Choose a database", "Compress images"], answer: 0 },
+  },
+  {
+    id: "llm-04",
+    title: "Transformer Flow",
+    description: "Trace the path from input tokens through a transformer block.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "flow",
+    objective: "Understand the high-level sequence of transformations in a transformer.",
+    content: "<p>A transformer repeatedly transforms token representations using attention and feed-forward layers. The output representations are used for the next prediction.</p>",
+    visual: ["Input", "Embedding", "Attention", "Feed Forward", "Output"],
+    quiz: { question: "Which component is central to a transformer?", options: ["Attention", "CSS", "HTTP", "SQL"], answer: 0 },
+  },
+  {
+    id: "llm-05",
+    title: "Next-Token Prediction",
+    description: "Watch an illustrative sequence of candidate next tokens.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "generation",
+    objective: "Understand generation as repeated next-token selection.",
+    content: "<p>A text-generation LLM produces a sequence by selecting a next token from a probability distribution, then repeating with the updated context.</p>",
+    generation: {
+      prompt: "The sky is",
+      steps: [
+        { token: "blue", probability: 70, alternatives: [["green", 15], ["clear", 8], ["bright", 4]] },
+        { token: "and", probability: 52, alternatives: [["very", 20], ["so", 12], ["today", 6]] },
+        { token: "clear", probability: 61, alternatives: [["bright", 16], ["wide", 9], ["calm", 5]] },
+        { token: "today", probability: 58, alternatives: [["outside", 17], ["above", 11], ["here", 6]] },
+      ],
+    },
+    quiz: { question: "What is the core idea behind text generation in an LLM?", options: ["Repeatedly predicting the next token from context", "Looking up every sentence in a database", "Choosing a random paragraph once", "Rendering the answer with CSS"], answer: 0 },
+  },
+  {
+    id: "llm-06",
+    title: "Parameters",
+    description: "Understand parameters as learned numerical values inside a model.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "parameters",
+    objective: "Understand what parameters are and why model size matters.",
+    content: "<p>Parameters are learned numerical values adjusted during training. They store patterns the model can use when transforming representations and making predictions.</p>",
+    quiz: { question: "Which statement about parameters is correct?", options: ["They are learned numerical values inside a model", "They are user questions", "They are database records", "They are browser settings"], answer: 0 },
+  },
+  {
+    id: "llm-07",
+    title: "Temperature",
+    description: "See how temperature changes the shape of token probabilities.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "sampling",
+    objective: "Understand temperature as a control over output distribution sharpness.",
+    content: "<p>Temperature rescales logits before converting them to probabilities. Lower values generally concentrate probability mass; higher values make the distribution flatter.</p>",
+    quiz: { question: "What does lower temperature generally do?", options: ["Makes the distribution more concentrated and selection more predictable", "Adds parameters", "Removes tokenization", "Turns the model into a search engine"], answer: 0 },
+  },
+  {
+    id: "llm-08",
+    title: "Top-k and Top-p",
+    description: "Compare two ways to restrict candidate tokens during sampling.",
+    difficulty: "Intermediate",
+    xp: 25,
+    type: "sampling",
+    objective: "Distinguish fixed-candidate top-k from probability-mass-based top-p sampling.",
+    content: "<p>Top-k keeps the k highest-probability candidates. Top-p keeps the smallest set whose cumulative probability crosses a threshold.</p>",
+    quiz: { question: "What does top-k do?", options: ["Limits candidates to the k most probable choices", "Chooses every candidate", "Changes model size", "Converts tokens into English"], answer: 0 },
+  },
+  {
+    id: "llm-final",
+    title: "LLM Fundamentals Final Challenge",
+    description: "Show that you can trace how an LLM turns context into generation.",
+    difficulty: "Challenge",
+    xp: 50,
+    type: "final",
+    objective: "Connect tokenization, embeddings, attention, prediction, and sampling into one mental model.",
+    content: "<p>This final challenge checks whether the core LLM pipeline makes sense as one system.</p>",
+    visual: ["Input", "Tokens", "Embeddings", "Attention", "Next token", "Sampling"],
+    quiz: { question: "Which sequence best matches text generation?", type: "order", order: ["Input text", "Tokenization", "Transformer / attention", "Next-token prediction", "Output"] },
+    finalChallenge: [
+      { question: "Which statement about parameters is correct?", options: ["They are learned numerical values inside a model", "They are user questions", "They are database records", "They are browser settings"], answer: 0 },
+      { question: "What does lower temperature generally do?", options: ["Makes the distribution more concentrated and selection more predictable", "Adds parameters", "Removes tokenization", "Turns the model into a search engine"], answer: 0 },
+      { question: "What does top-k do?", options: ["Limits candidates to the k most probable choices", "Chooses every candidate", "Changes model size", "Converts tokens into English"], answer: 0 },
+      { question: "What does top-p do?", options: ["Chooses the smallest candidate group reaching a probability threshold", "Always chooses exactly three tokens", "Changes the number of model parameters", "Disables attention"], answer: 0 },
+      { question: "In one short sentence, explain what an LLM does when it generates text.", type: "short", answer: "predict" },
+    ],
+  },
+];
 
-export const allCurriculumLessons = levels.flatMap((level) => {
-  if (level.id === 1) return foundationLessons;
-  if (level.id === 2) return [...llmLessons, finalChallenge];
-  if (level.id === 3) return promptLessons;
-  return level.lessons || [];
-});
-export const curriculumLevelById = Object.fromEntries(levels.map((level) => [level.id, level]));
-export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
+export const promptLessons = [
+  { id: "prompt-01", title: "Prompt Structure", description: "Understand the pieces of a useful prompt.", difficulty: "Beginner", xp: 25, objective: "Recognize the role of context, task, constraints, and output format.", type: "prompt-anatomy", content: "<p>A prompt can be structured around the task, useful context, constraints, examples, and a requested output format.</p>", anatomy: [ { label: "Role", text: "You are a reviewer", answer: "role" }, { label: "Task", text: "Review this API design", answer: "task" }, { label: "Context", text: "Here is the architecture", answer: "context" }, { label: "Constraint", text: "Keep it under 200 words", answer: "constraint" }, { label: "Format", text: "Return a table", answer: "format" } ], quiz: { question: "Which prompt part defines what you want the model to do?", options: ["Task", "Theme", "Token ID", "GPU model"], answer: 0 } },
+  { id: "prompt-02", title: "Specificity", description: "Compare vague and specific instructions.", difficulty: "Beginner", xp: 25, objective: "See how specificity reduces ambiguity.", type: "prompt-compare", content: "<p>More specific instructions reduce the number of reasonable interpretations a model can choose from.</p>", pairs: [{ weak: "Write about APIs.", strong: "Explain REST APIs to a junior frontend developer using a 5-step example." }], quiz: { question: "What usually improves a prompt?", options: ["Clear constraints", "More ambiguity", "Fewer details", "Random examples"], answer: 0 } },
+  { id: "prompt-03", title: "Context & Constraints", description: "Give a model the context it needs while bounding the task.", difficulty: "Beginner", xp: 25, objective: "Use context and constraints to shape model behavior.", type: "specificity-builder", content: "<p>Context tells the model what it is working with. Constraints define boundaries such as audience, format, or length.</p>", builder: { task: ["Explain", "Rewrite", "Classify"], audience: ["Junior developer", "Executive", "Student"], format: ["Steps", "Table", "Bullets"], constraint: ["Under 100 words", "Include one example", "Use plain language"] }, quiz: { question: "What is a constraint?", options: ["A boundary on the requested output", "A hidden model weight", "A database key", "A browser cache"], answer: 0 } },
+  { id: "prompt-04", title: "Role Prompting", description: "Use a role when a task benefits from a specific perspective.", difficulty: "Beginner", xp: 25, objective: "Understand when role framing can provide useful context.", type: "role-match", content: "<p>A role can frame the perspective, expertise, or audience expected for a response.</p>", roles: [["Security reviewer", "Find authorization gaps"], ["API designer", "Propose a request/response shape"], ["Tutor", "Explain a concept step by step"], ["Copy editor", "Improve clarity and grammar"]], quiz: { question: "When is a role useful?", options: ["When perspective or expertise matters", "When hiding the task", "When removing context", "When changing the tokenizer"], answer: 0 } },
+  { id: "prompt-05", title: "Few-Shot Examples", description: "Guide a task with input/output examples.", difficulty: "Intermediate", xp: 25, objective: "Use examples to communicate desired behavior.", type: "few-shot", content: "<p>Few-shot prompting gives examples of inputs and desired outputs so the model can infer the task pattern.</p>", examples: [["Bug report: app crashes", "Category: crash"], ["Cannot sign in", "Category: auth"], ["Refund requested", "Category: billing"]], quiz: { question: "What do few-shot examples mainly communicate?", options: ["The expected task pattern", "The number of model parameters", "The user's CPU model", "The browser version"], answer: 0 } },
+  { id: "prompt-06", title: "Output Format", description: "Make responses easier to consume by specifying a structure.", difficulty: "Intermediate", xp: 25, objective: "Specify output structures that downstream code can use.", type: "output-format", content: "<p>When an answer feeds another system, a clear output format can make parsing and validation easier.</p>", formats: ["Bullets", "Table", "JSON", "Short paragraph"], quiz: { question: "Why specify an output format?", options: ["To make results predictable to consume", "To increase GPU memory", "To remove context", "To retrain the model"], answer: 0 } },
+  { id: "prompt-07", title: "Prompt Decomposition", description: "Break a complex task into smaller, verifiable steps.", difficulty: "Intermediate", xp: 25, objective: "Turn broad prompts into explicit sub-tasks.", type: "prompt-decompose", content: "<p>Decomposition makes complex work easier to reason about, validate, and debug.</p>", steps: ["Understand the task", "List subtasks", "Set constraints", "Define output", "Review result"], quiz: { question: "What is a benefit of decomposition?", options: ["Smaller steps are easier to verify", "It removes all errors", "It guarantees factuality", "It changes model weights"], answer: 0 } },
+  { id: "prompt-08", title: "Prompt Refinement Lab", description: "Repair a weak prompt by identifying what is missing.", difficulty: "Intermediate", xp: 25, objective: "Iteratively improve a prompt based on observed weaknesses.", type: "refinement", content: "<p>Prompt refinement is an iterative loop: observe an output, identify the gap, adjust the instruction, and test again.</p>", refinement: { base: "Summarize this.", fixes: ["Add target audience", "Specify length", "Specify important points", "Request a format"] }, quiz: { question: "What is a useful refinement loop?", options: ["Observe → identify gap → revise → test", "Guess → publish → ignore", "Train a new model every time", "Remove all constraints"], answer: 0 } },
+  { id: "prompt-09", title: "Prompt Evaluation", description: "Compare outputs against explicit criteria.", difficulty: "Intermediate", xp: 25, objective: "Evaluate prompts by task-specific success criteria instead of vibes.", type: "prompt-evaluate", content: "<p>Prompt quality should be judged against criteria such as correctness, completeness, format compliance, and usefulness.</p>", rubric: ["Correctness", "Completeness", "Format compliance", "Usefulness"], quiz: { question: "What should prompt evaluation compare?", options: ["Outputs against explicit criteria", "Only word count", "Only model brand", "Only temperature"], answer: 0 } },
+  { id: "prompt-10", title: "Prompt Engineering Final Boss", description: "Design a robust prompt from requirements and defend your choices.", difficulty: "Challenge", xp: 50, objective: "Combine prompt structure, specificity, context, examples, format, decomposition, refinement, and evaluation.", type: "prompt-final", content: "<p>Build a prompt for a realistic product task and choose the constraints that make success measurable.</p>", requirements: ["Audience", "Task", "Context", "Constraints", "Output format"], quiz: { question: "Which collection gives the prompt the clearest control?", options: ["Task + context + constraints + format", "Only a role", "Only examples", "Only a long paragraph"], answer: 0 } },
+];
+
+export const finalChallenge = llmLessons.find((lesson) => lesson.type === "final");
+
+export const achievements = [
+  { id: "first-step", icon: "↗", title: "FIRST STEP", description: "Complete your first lesson." },
+  { id: "curious-mind", icon: "✦", title: "CURIOUS MIND", description: "Complete 3 lessons." },
+  { id: "ai-explorer", icon: "◆", title: "AI EXPLORER", description: "Complete Level 1." },
+  { id: "token-tamer", icon: "▦", title: "TOKEN TAMER", description: "Complete the tokenization mission." },
+  { id: "attention-seeker", icon: "...", title: "ATTENTION SEEKER", description: "Complete the attention mission." },
+  { id: "model-thinker", icon: "◇", title: "MODEL THINKER", description: "Complete the parameters mission." },
+  { id: "llm-initiate", icon: "◎", title: "LLM INITIATE", description: "Complete LLM Fundamentals." },
+  { id: "prompt-apprentice", icon: "✎", title: "PROMPT APPRENTICE", description: "Complete 3 Prompt Engineering missions." },
+  { id: "context-master", icon: "⌁", title: "CONTEXT MASTER", description: "Complete Context & Constraints." },
+  { id: "example-builder", icon: "▤", title: "EXAMPLE BUILDER", description: "Complete the Few-Shot mission." },
+  { id: "prompt-refiner", icon: "↻", title: "PROMPT REFINER", description: "Complete the Prompt Refinement Lab." },
+  { id: "prompt-engineer", icon: "★", title: "PROMPT ENGINEER", description: "Complete the entire Prompt Engineering level." },
+];
+
+export const lessons = [...foundationLessons, ...llmLessons, ...promptLessons];
