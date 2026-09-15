@@ -121,9 +121,15 @@ export const foundationLessons = [
   },
 ];
 
+export const llmLessons = [];
+export const promptLessons = [];
+export const finalChallenge = { id: "llm-final", xp: 0, type: "final" };
+
 export const allCurriculumLessons = levels.flatMap((level) => {
   if (level.id === 1) return foundationLessons;
   if (level.id === 2) return [...llmLessons, finalChallenge];
   if (level.id === 3) return promptLessons;
   return level.lessons || [];
 });
+export const curriculumLevelById = Object.fromEntries(levels.map((level) => [level.id, level]));
+export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
