@@ -2,6 +2,8 @@ import { loadState } from "./state.js";
 import { MEANINGFUL_ACHIEVEMENTS } from "./mastery.js";
 
 let previousIds = new Set();
+let previousLevel = 1;
+let previousCompletedLevels = new Set();
 let initialized = false;
 let hideTimer = null;
 
@@ -26,9 +28,13 @@ function showAchievementToast(ids) {
 function sync() {
   const state = loadState();
   const currentIds = new Set(MEANINGFUL_ACHIEVEMENTS.map(([id]) => id).filter((id) => state.achievements.includes(id)));
+  const currentCompletedLevels = new Set(state.completedLevels || []);
   const newlyUnlocked = [...currentIds].filter((id) => !previousIds.has(id));
+  const majorProgress = state.level > previousLevel || [...currentCompletedLevels].some((id) => !previousCompletedLevels.has(id));
   previousIds = currentIds;
-  if (initialized && newlyUnlocked.length) showAchievementToast(newlyUnlocked);
+  previousLevel = state.level;
+  previousCompletedLevels = currentCompletedLevels;
+  if (initialized && newlyUnlocked.length && !majorProgress) showAchievementToast(newlyUnlocked);
   initialized = true;
 }
 
