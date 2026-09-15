@@ -1,5 +1,5 @@
 const $ = (selector) => document.querySelector(selector);
-
+const STORAGE_KEY = 'ai-learn-player-state-v1';
 const getMissionLists = () => [...document.querySelectorAll('.lesson-list')];
 
 function ensureConfettiLayer() {
@@ -24,16 +24,13 @@ function applyProgressiveDisclosure() {
   getMissionLists().forEach((list) => {
     const cards = [...list.querySelectorAll('.lesson-card')];
     if (cards.length <= 3) return;
-    const existing = list.nextElementSibling;
-    if (existing?.classList.contains('mission-reveal')) return;
-
+    if (list.nextElementSibling?.classList.contains('mission-reveal')) return;
     list.classList.add('missions-collapsed');
     const wrapper = document.createElement('div');
     wrapper.className = 'mission-reveal';
     const button = missionButton();
     wrapper.append(button);
     list.insertAdjacentElement('afterend', wrapper);
-
     button.addEventListener('click', () => {
       const expanded = list.classList.toggle('is-expanded');
       list.classList.toggle('missions-collapsed', !expanded);
@@ -51,13 +48,10 @@ function syncCurrentMission() {
   );
   document.querySelectorAll('.lesson-card.current-mission').forEach((card) => card.classList.remove('current-mission'));
   if (!current) return;
-
   const title = current.querySelector('h3')?.textContent?.trim();
-  const heroMission = $('.hero-progress');
-  const heroTitle = heroMission?.querySelector('strong');
-  const heroMeta = heroMission?.querySelector('.muted.small');
-  if (heroTitle && title) heroTitle.textContent = title;
-  if (heroMeta) heroMeta.textContent = current.querySelector('.tag.xp')?.textContent || 'Continue your path.';
+  const hero = $('.hero-progress');
+  if (hero?.querySelector('strong') && title) hero.querySelector('strong').textContent = title;
+  if (hero?.querySelector('.muted.small')) hero.querySelector('.muted.small').textContent = current.querySelector('.tag.xp')?.textContent || 'Continue your path.';
   current.classList.add('current-mission');
 }
 
@@ -95,14 +89,14 @@ function celebrate() {
 let previousCompleted = null;
 function detectCompletion() {
   try {
-    const raw = localStorage.getItem('aiLearnState');
+    const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return;
     const state = JSON.parse(raw);
     const count = Array.isArray(state.completedLessons) ? state.completedLessons.length : 0;
     if (previousCompleted !== null && count > previousCompleted) celebrate();
     previousCompleted = count;
   } catch {
-    // Presentation layer must never interrupt the learning app.
+    // Keep the presentation layer non-blocking.
   }
 }
 
