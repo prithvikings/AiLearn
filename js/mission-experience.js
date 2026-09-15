@@ -59,16 +59,21 @@ function ensureLink() {
 function ensureShell(modal) {
   if (modal.dataset.missionShell === "true") return;
 
-  const close = $("#modal-close", modal);
-  const meta = $(".lesson-meta", modal);
-  const title = $("#modal-title", modal);
-  const description = $("#modal-description", modal);
-  const objective = $("#modal-objective", modal);
-  const visual = $("#modal-visual", modal);
-  const content = $("#modal-content", modal);
-  const interaction = $("#modal-interaction", modal);
-  const quiz = $("#modal-quiz", modal);
-  const actions = $(".modal-actions", modal);
+  // #lesson-modal is the full-screen backdrop. Keep the existing
+  // .lesson-modal section as the actual centered dialog surface.
+  const dialog = $(".lesson-modal", modal);
+  if (!dialog) return;
+
+  const close = $("#modal-close", dialog);
+  const meta = $(".lesson-meta", dialog);
+  const title = $("#modal-title", dialog);
+  const description = $("#modal-description", dialog);
+  const objective = $("#modal-objective", dialog);
+  const visual = $("#modal-visual", dialog);
+  const content = $("#modal-content", dialog);
+  const interaction = $("#modal-interaction", dialog);
+  const quiz = $("#modal-quiz", dialog);
+  const actions = $(".modal-actions", dialog);
 
   const topbar = document.createElement("header");
   topbar.className = "mission-topbar";
@@ -107,12 +112,12 @@ function ensureShell(modal) {
     if (element) host.appendChild(element);
   });
 
-  modal.classList.add("mission-modal");
-  modal.insertBefore(topbar, modal.firstChild);
-  modal.insertBefore(progress, topbar.nextSibling);
-  modal.insertBefore(heading, progress.nextSibling);
-  modal.insertBefore(host, heading.nextSibling);
-  modal.appendChild(footer);
+  dialog.classList.add("mission-modal");
+  dialog.insertBefore(topbar, dialog.firstChild);
+  dialog.insertBefore(progress, topbar.nextSibling);
+  dialog.insertBefore(heading, progress.nextSibling);
+  dialog.insertBefore(host, heading.nextSibling);
+  dialog.appendChild(footer);
 
   modal.dataset.missionShell = "true";
   primary.addEventListener("click", handlePrimary);
