@@ -1,4 +1,4 @@
-import { finalChallenge, foundationLessons, llmLessons, promptLessons } from "./curriculum.js";
+import { finalChallenge, foundationLessons, levels as curriculumLevelsMeta, llmLessons, promptLessons } from "./curriculum.js";
 import { phase4Lessons } from "./phase4.js";
 import { phase5Lessons } from "./phase5.js";
 import { phase6Lessons } from "./phase6.js";
@@ -10,23 +10,27 @@ import { phase11Lessons } from "./phase11.js";
 import { phase12Lessons } from "./phase12.js";
 import { calculateLevel, getLevelProgress, isLevelUnlocked } from "./state.js";
 
-export const curriculumLevels = [
-  { id: 1, lessons: foundationLessons },
-  { id: 2, lessons: [...llmLessons, finalChallenge] },
-  { id: 3, lessons: promptLessons },
-  { id: 4, lessons: phase4Lessons },
-  { id: 5, lessons: phase5Lessons },
-  { id: 6, lessons: phase6Lessons },
-  { id: 7, lessons: phase7Lessons },
-  { id: 8, lessons: phase8Lessons },
-  { id: 9, lessons: phase9Lessons },
-  { id: 10, lessons: phase10Lessons },
-  { id: 11, lessons: phase11Lessons },
-  { id: 12, lessons: phase12Lessons },
+const lessonGroups = [
+  foundationLessons,
+  [...llmLessons, finalChallenge],
+  promptLessons,
+  phase4Lessons,
+  phase5Lessons,
+  phase6Lessons,
+  phase7Lessons,
+  phase8Lessons,
+  phase9Lessons,
+  phase10Lessons,
+  phase11Lessons,
+  phase12Lessons,
 ];
 
-export const allLessons = curriculumLevels.flatMap(({ lessons }) => lessons);
+export const curriculumLevels = curriculumLevelsMeta.map((meta, index) => ({
+  ...meta,
+  lessons: lessonGroups[index] || [],
+}));
 
+export const allLessons = curriculumLevels.flatMap(({ lessons }) => lessons);
 export const curriculumLevelById = Object.fromEntries(curriculumLevels.map((level) => [level.id, level]));
 
 export function getPlayerLevel(state) {
@@ -38,10 +42,7 @@ export function getXpProgress(state) {
 }
 
 export function getCompletedMissionCount(state) {
-  return allLessons.reduce(
-    (count, lesson) => count + Number(state.completedLessons.includes(lesson.id)),
-    0,
-  );
+  return allLessons.filter((lesson) => state.completedLessons.includes(lesson.id)).length;
 }
 
 export function getMissionProgress(state, lessons) {
@@ -61,8 +62,8 @@ export function getLevelProgressById(state, levelId) {
 }
 
 export function getCurrentMission(state) {
-  const unlockedLevels = curriculumLevels.filter((level) => isLevelUnlocked(state, level.id));
-  for (const level of unlockedLevels) {
+  for (const level of curriculumLevels) {
+    if (!isLevelUnlocked(state, level.id)) break;
     const mission = level.lessons.find((lesson) => !state.completedLessons.includes(lesson.id));
     if (mission) return mission;
   }
@@ -71,19 +72,11 @@ export function getCurrentMission(state) {
 
 export function getDailyProgress(state, goal = 100) {
   const xp = Math.max(0, Number(state.dailyProgress?.xp) || 0);
-  return {
-    xp,
-    goal,
-    percent: Math.min(100, (xp / goal) * 100),
-    complete: Boolean(state.dailyProgress?.goalCompleted) || xp >= goal,
-  };
+  return { xp, goal, percent: Math.min(100, (xp / goal) * 100), complete: Boolean(state.dailyProgress?.goalCompleted) || xp >= goal };
 }
 
 export function getStreakStatus(state) {
-  return {
-    days: Math.max(0, Number(state.streak) || 0),
-    active: Boolean(state.lastActivityDate),
-  };
+  return { days: Math.max(0, Number(state.streak) || 0), active: Boolean(state.lastActivityDate) };
 }
 
 export function getUnlockedLevels(state) {
@@ -95,11 +88,35 @@ export function getCompletedLevels(state) {
 }
 
 export function getMastery(state, levelId) {
-  const progress = getLevelProgressById(state, levelId);
   const level = curriculumLevelById[levelId];
-  return {
-    levelId,
-    title: level?.title ?? `Level ${levelId}`,
-    ...progress,
+  return { levelId, title: level?.title ?? `Level ${levelId}`, ...getLevelProgressById(state, levelId) };
+}
+
+export function getCurriculumMastery(state) {
+  return { levels: curriculumLevels.map((level) => getMastery(state, level.id)), allLessons };
+}
+
+export function evaluateMeaningfulAchievements(state, mastery = getCurriculumMastery(state)) {
+  const completedPaths = mastery.levels.filter((item) => item.complete).length;
+  const perfectChallenges = Object.values(state.challengeScores || {}).filter((score) => Number(score) === 100).length;
+  const conditions = {
+    "foundations-complete": mastery.levels[0]?.complete,
+    "llm-fundamentals-complete": mastery.levels[1]?.complete,
+    "prompt-architect": mastery.levels[2]?.complete,
+    "application-architect": mastery.levels[3]?.complete,
+    "local-ai-builder": mastery.levels[4]?.complete,
+    "vector-search-architect": mastery.levels[5]?.complete,
+    "rag-builder": mastery.levels[6]?.complete,
+    "agent-engineer": mastery.levels[7]?.complete,
+    "memory-planning-architect": mastery.levels[8]?.complete,
+    "mcp-architect": mastery.levels[9]?.complete,
+    "orchestration-architect": mastery.levels[10]?.complete,
+    "advanced-agentic-architect": mastery.levels[11]?.complete,
+    "ai-explorer": completedPaths >= 5,
+    "breadth-builder": completedPaths >= 8,
+    "perfect-challenge": perfectChallenges >= 1,
+    "challenge-specialist": perfectChallenges >= 3,
+    "full-journey": completedPaths === curriculumLevels.length,
   };
+  return Object.entries(conditions).filter(([, eligible]) => eligible).map(([id]) => id);
 }
