@@ -51,4 +51,4 @@ export const curriculumLevelById = Object.fromEntries(
   curriculumLevels.map((level) => [level.id, level]),
 );
 export const allLessons = curriculumLevels.flatMap((level) => level.lessons);
-export const getCurriculumLevel = (levelId) => curriculumLevelById[levelId] || null;
+export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
