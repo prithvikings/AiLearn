@@ -10,6 +10,7 @@ import { phase11Lessons } from "./phase11.js";
 import { phase12Lessons } from "./phase12.js";
 import { loadState, isLevelUnlocked } from "./state.js";
 import { roadmapLevels } from "./phase5-roadmap.js";
+import "./mission-experience.js";
 
 const LEVELS = [foundationLessons, [...llmLessons, finalChallenge], promptLessons, phase4Lessons, phase5Lessons, phase6Lessons, phase7Lessons, phase8Lessons, phase9Lessons, phase10Lessons, phase11Lessons, phase12Lessons];
 const $ = (selector, root = document) => root.querySelector(selector);
