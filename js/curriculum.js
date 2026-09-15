@@ -1,4 +1,3 @@
-// Canonical base curriculum content.
 export const levels = [
   {
     id: 1,
@@ -54,32 +53,65 @@ export const foundationLessons = [
   {
     id: "ai",
     title: "What is Artificial Intelligence?",
-    description: "Understand what AI means and how it differs from ordinary software.",
+    description:
+      "Understand what AI means and how it differs from ordinary software.",
     difficulty: "Beginner",
     xp: 25,
     visual: ["Rules", "Data", "AI System", "Output"],
-    content: "<p>Artificial Intelligence is a broad field focused on building systems that can perform tasks that normally require human-like intelligence.</p><p>The useful mental model: software follows instructions; AI systems can learn patterns from examples and use those patterns to produce useful outputs.</p>",
-    quiz: { question: "Which best describes AI?", options: ["A programming language", "Systems that perform tasks requiring intelligence", "A database", "A web framework"], answer: 1 },
+    content:
+      "<p>Artificial Intelligence is a broad field focused on building systems that can perform tasks that normally require human-like intelligence.</p><p>The useful mental model: software follows instructions; AI systems can learn patterns from examples and use those patterns to produce useful outputs.</p>",
+    quiz: {
+      question: "Which best describes AI?",
+      options: [
+        "A programming language",
+        "Systems that perform tasks requiring intelligence",
+        "A database",
+        "A web framework",
+      ],
+      answer: 1,
+    },
   },
   {
     id: "genai",
     title: "What is Generative AI?",
-    description: "See how AI systems can create new text, images, code and more.",
+    description:
+      "See how AI systems can create new text, images, code and more.",
     difficulty: "Beginner",
     xp: 25,
     visual: ["Prompt", "Model", "Generated Output"],
-    content: "<p>Generative AI refers to models that generate new content from learned patterns. Text, images, audio and code can all be generated.</p><p>Large language models are one important category of generative AI, focused on language.</p>",
-    quiz: { question: "What is a defining capability of generative AI?", options: ["Only storing data", "Generating new content", "Only sorting records", "Only rendering websites"], answer: 1 },
+    content:
+      "<p>Generative AI refers to models that generate new content from learned patterns. Text, images, audio and code can all be generated.</p><p>Large language models are one important category of generative AI, focused on language.</p>",
+    quiz: {
+      question: "What is a defining capability of generative AI?",
+      options: [
+        "Only storing data",
+        "Generating new content",
+        "Only sorting records",
+        "Only rendering websites",
+      ],
+      answer: 1,
+    },
   },
   {
     id: "llm",
     title: "What is an LLM?",
-    description: "Learn the basic idea behind large language models without the math.",
+    description:
+      "Learn the basic idea behind large language models without the math.",
     difficulty: "Beginner",
     xp: 25,
     visual: ["Text", "Tokens", "LLM", "Next token"],
-    content: "<p>A Large Language Model (LLM) is a model trained on large amounts of text to learn patterns in language. At its core, a text-generation LLM repeatedly predicts what token should come next.</p>",
-    quiz: { question: "What does a text-generation LLM fundamentally predict?", options: ["The next token", "A database row", "A CSS property", "A network packet"], answer: 0 },
+    content:
+      "<p>A Large Language Model (LLM) is a model trained on large amounts of text to learn patterns in language. At its core, a text-generation LLM repeatedly predicts what token should come next.</p>",
+    quiz: {
+      question: "What does a text-generation LLM fundamentally predict?",
+      options: [
+        "The next token",
+        "A database row",
+        "A CSS property",
+        "A network packet",
+      ],
+      answer: 0,
+    },
   },
   {
     id: "apps",
@@ -88,8 +120,13 @@ export const foundationLessons = [
     difficulty: "Beginner",
     xp: 25,
     visual: ["UI", "Application Logic", "LLM Request", "Model", "Response"],
-    content: "<p>LLM applications combine familiar software with model APIs. The UI gathers input, application logic builds a request, a model generates a response, and the application renders the result.</p>",
-    quiz: { question: "Which component typically builds the request sent to a model?", options: ["Application logic", "CSS", "Database index", "Browser cache"], answer: 0 },
+    content:
+      "<p>LLM applications combine familiar software with model APIs. The UI gathers input, application logic builds a request, a model generates a response, and the application renders the result.</p>",
+    quiz: {
+      question: "Which component typically builds the request sent to a model?",
+      options: ["Application logic", "CSS", "Database index", "Browser cache"],
+      answer: 0,
+    },
   },
   {
     id: "usecases",
@@ -99,9 +136,14 @@ export const foundationLessons = [
     xp: 25,
     type: "use-case-match",
     visual: ["Task", "LLM", "Output"],
-    content: "<p>Language models are useful for tasks involving language patterns such as summarization, drafting, transformation, classification, extraction, and conversational interfaces.</p>",
+    content:
+      "<p>Language models are useful for tasks involving language patterns such as summarization, drafting, transformation, classification, extraction, and conversational interfaces.</p>",
     matches: [["Summarize a report", "Transformation"], ["Classify support tickets", "Classification"], ["Draft an email", "Generation"], ["Extract names from text", "Extraction"]],
-    quiz: { question: "Which is a common LLM use case?", options: ["Summarizing text", "Changing CPU voltage", "Rendering pixels directly", "Updating a network driver"], answer: 0 },
+    quiz: {
+      question: "Which is a common LLM use case?",
+      options: ["Summarizing text", "Changing CPU voltage", "Rendering pixels directly", "Updating a network driver"],
+      answer: 0,
+    },
   },
 ];
 
@@ -163,15 +205,7 @@ export const llmLessons = [
     type: "generation",
     objective: "Understand generation as repeated next-token selection.",
     content: "<p>A text-generation LLM produces a sequence by selecting a next token from a probability distribution, then repeating with the updated context.</p>",
-    generation: {
-      prompt: "The sky is",
-      steps: [
-        { token: "blue", probability: 70, alternatives: [["green", 15], ["clear", 8], ["bright", 4]] },
-        { token: "and", probability: 52, alternatives: [["very", 20], ["so", 12], ["today", 6]] },
-        { token: "clear", probability: 61, alternatives: [["bright", 16], ["wide", 9], ["calm", 5]] },
-        { token: "today", probability: 58, alternatives: [["outside", 17], ["above", 11], ["here", 6]] },
-      ],
-    },
+    generation: { prompt: "The sky is", steps: [ { token: "blue", probability: 70, alternatives: [["green", 15], ["clear", 8], ["bright", 4]] }, { token: "and", probability: 52, alternatives: [["very", 20], ["so", 12], ["today", 6]] }, { token: "clear", probability: 61, alternatives: [["bright", 16], ["wide", 9], ["calm", 5]] }, { token: "today", probability: 58, alternatives: [["outside", 17], ["above", 11], ["here", 6]] } ] },
     quiz: { question: "What is the core idea behind text generation in an LLM?", options: ["Repeatedly predicting the next token from context", "Looking up every sentence in a database", "Choosing a random paragraph once", "Rendering the answer with CSS"], answer: 0 },
   },
   {
@@ -242,6 +276,7 @@ export const promptLessons = [
 ];
 
 export const finalChallenge = llmLessons.find((lesson) => lesson.type === "final");
+
 export const achievements = [
   { id: "first-step", icon: "↗", title: "FIRST STEP", description: "Complete your first lesson." },
   { id: "curious-mind", icon: "✦", title: "CURIOUS MIND", description: "Complete 3 lessons." },
