@@ -1,4 +1,4 @@
-import { loadState } from './state.js';
+import { loadState } from "./state.js";
 
 let signature = JSON.stringify(loadState());
 
@@ -7,6 +7,6 @@ setInterval(() => {
   const nextSignature = JSON.stringify(next);
   if (nextSignature !== signature) {
     signature = nextSignature;
-    window.dispatchEvent(new CustomEvent('ailearn-state-updated'));
+    window.dispatchEvent(new CustomEvent("ailearn-state-updated"));
   }
 }, 600);
