@@ -1,4 +1,4 @@
-import { levels, foundationLessons, llmLessons, promptLessons, finalChallenge } from "./curriculum.js";
+import { foundationLessons, llmLessons, promptLessons, finalChallenge } from "./curriculum.js";
 import { phase4Lessons } from "./phase4.js";
 import { phase5Lessons } from "./phase5.js";
 import { phase6Lessons } from "./phase6.js";
@@ -9,22 +9,7 @@ import { phase10Lessons } from "./phase10.js";
 import { phase11Lessons } from "./phase11.js";
 import { phase12Lessons } from "./phase12.js";
 
-const lessonGroups = [
-  foundationLessons,
-  [...llmLessons, finalChallenge],
-  promptLessons,
-  phase4Lessons,
-  phase5Lessons,
-  phase6Lessons,
-  phase7Lessons,
-  phase8Lessons,
-  phase9Lessons,
-  phase10Lessons,
-  phase11Lessons,
-  phase12Lessons,
-];
-
-const CANONICAL_METADATA = [
+const LEVEL_METADATA = [
   [1, "AI Foundations", "Build your mental model of AI."],
   [2, "LLM Fundamentals", "Tokens, embeddings, attention & prediction."],
   [3, "Prompt Engineering", "Learn to communicate with models effectively."],
@@ -39,15 +24,31 @@ const CANONICAL_METADATA = [
   [12, "Advanced Agentic AI", "Explore evaluation, reliability, guardrails, observability and production AI systems."],
 ];
 
-export const curriculumLevels = CANONICAL_METADATA.map(([id, title, description], index) => ({
-  ...levels[id - 1],
+const LESSON_GROUPS = [
+  foundationLessons,
+  [...llmLessons, finalChallenge],
+  promptLessons,
+  phase4Lessons,
+  phase5Lessons,
+  phase6Lessons,
+  phase7Lessons,
+  phase8Lessons,
+  phase9Lessons,
+  phase10Lessons,
+  phase11Lessons,
+  phase12Lessons,
+];
+
+export const curriculumLevels = LEVEL_METADATA.map(([id, title, description], index) => ({
   id,
   title,
   description,
   unlocked: id === 1,
-  lessons: lessonGroups[index] || [],
+  lessons: LESSON_GROUPS[index] || [],
 }));
 
-export const curriculumLevelById = Object.fromEntries(curriculumLevels.map((level) => [level.id, level]));
+export const curriculumLevelById = Object.fromEntries(
+  curriculumLevels.map((level) => [level.id, level]),
+);
 export const allLessons = curriculumLevels.flatMap((level) => level.lessons);
-export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
+export const getCurriculumLevel = (levelId) => curriculumLevelById[levelId] || null;
