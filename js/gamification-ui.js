@@ -14,8 +14,8 @@ function ensureStyles() {
     .gamification-goal{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px;align-items:center;padding:17px 19px;border:1px solid var(--border);border-radius:17px;background:var(--surface);box-shadow:0 5px 18px rgba(53,45,35,.04)}
     .gamification-goal-copy{display:grid;gap:4px}.gamification-goal-kicker{font:700 .58rem 'DM Mono',monospace;letter-spacing:.14em;color:var(--accent);text-transform:uppercase}.gamification-goal-copy strong{font-size:.92rem}.gamification-goal-copy small{color:var(--muted);font-size:.68rem}.gamification-goal-value{font:800 .75rem 'DM Mono',monospace;color:var(--text)}.gamification-track{height:8px;margin-top:8px;border-radius:999px;background:#eee6dc;overflow:hidden}.gamification-track span{display:block;height:100%;max-width:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .35s ease}.gamification-goal.is-complete{border-color:#cfe0d5;background:#f8fbf9}.gamification-goal.is-complete .gamification-goal-kicker{color:var(--success)}
     .player-level-card{display:grid;grid-template-columns:auto minmax(0,1fr);gap:13px;align-items:center;padding:15px 17px;border:1px solid #dec9bb;border-radius:17px;background:#fff9f4}.player-level-number{width:45px;height:45px;display:grid;place-items:center;border-radius:13px;background:#f2d5c6;color:#a85031;font-size:1.35rem;font-weight:900}.player-level-copy{display:grid;gap:3px}.player-level-copy span{font:700 .57rem 'DM Mono',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}.player-level-copy strong{font-size:.9rem}.player-level-copy small{color:var(--muted);font-size:.68rem}.player-level-progress{height:6px;margin-top:3px;border-radius:999px;background:#eee6dc;overflow:hidden}.player-level-progress span{display:block;height:100%;background:var(--accent);border-radius:inherit;transition:width .35s ease}
-    .gamification-reward{display:grid;gap:12px;margin-top:16px;padding:16px;border:1px solid #dfc9ba;border-radius:16px;background:#fffaf5;text-align:left}.gamification-reward-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.gamification-reward-head strong{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}.gamification-xp-earned{font:900 1.15rem 'DM Mono',monospace;color:#9a5d32}.gamification-reward-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gamification-reward-stat{padding:9px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface)}.gamification-reward-stat span{display:block;color:var(--muted);font-size:.59rem;text-transform:uppercase;letter-spacing:.08em}.gamification-reward-stat strong{display:block;margin-top:3px;font-size:.76rem}.gamification-milestone{padding:10px 11px;border-left:3px solid var(--accent-2);background:#fff4df;border-radius:9px;font-size:.72rem}.gamification-live{position:fixed;right:18px;bottom:18px;z-index:60;max-width:min(360px,calc(100vw - 36px));padding:13px 15px;border:1px solid #dfc7b8;border-radius:13px;background:#fffaf5;box-shadow:0 15px 35px rgba(53,45,35,.15);font-size:.74rem}.gamification-live strong{display:block;margin-bottom:3px}.gamification-live[hidden]{display:none}
-    @media(max-width:760px){.gamification-goal{grid-template-columns:1fr}.player-level-card{grid-template-columns:auto 1fr}.gamification-reward-grid{grid-template-columns:1fr}.gamification-live{right:12px;bottom:12px;max-width:calc(100vw - 24px)}}
+    .gamification-reward{display:grid;gap:12px;margin-top:16px;padding:16px;border:1px solid #dfc9ba;border-radius:16px;background:#fffaf5;text-align:left}.gamification-reward-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}.gamification-reward-head strong{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase}.gamification-xp-earned{font:900 1.15rem 'DM Mono',monospace;color:#9a5d32}.gamification-reward-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.gamification-reward-stat{padding:9px 10px;border:1px solid var(--border);border-radius:11px;background:var(--surface)}.gamification-reward-stat span{display:block;color:var(--muted);font-size:.59rem;text-transform:uppercase;letter-spacing:.08em}.gamification-reward-stat strong{display:block;margin-top:3px;font-size:.76rem}.gamification-milestone{padding:10px 11px;border-left:3px solid var(--accent-2);background:#fff4df;border-radius:9px;font-size:.72rem}
+    @media(max-width:760px){.gamification-goal{grid-template-columns:1fr}.player-level-card{grid-template-columns:auto 1fr}.gamification-reward-grid{grid-template-columns:1fr}}
     @media(prefers-reduced-motion:reduce){.gamification-track span,.player-level-progress span{transition:none}}
   `;
   document.head.appendChild(style);
@@ -59,10 +59,22 @@ function renderHome() {
   lastAchievements = new Set(state.achievements);
 }
 
-function showLiveReward(detail) {
-  const modal = $("#lesson-modal");
+function showRewardToast(state, reward, levelledUp, milestoneText) {
+  const toast = $("#reward-toast");
+  if (!toast) return;
+  const title = $("#reward-title");
+  const copy = $("#reward-copy");
+  if (title) title.textContent = levelledUp ? `Level ${state.level} reached` : "Mission complete";
+  if (copy) copy.textContent = `+${reward} XP · 🔥 ${state.streak} day streak${state.dailyProgress.goalCompleted ? " · Daily goal complete" : ""}${milestoneText.length ? ` · ${milestoneText[0]} unlocked` : ""}`;
+  toast.hidden = false;
+  clearTimeout(rewardTimer);
+  rewardTimer = setTimeout(() => { toast.hidden = true; }, 2600);
+}
+
+function showMissionReward(detail) {
   const newlyCompleted = Number(detail?.newlyCompleted) || 0;
   if (!newlyCompleted) return;
+  const modal = $("#lesson-modal");
   const state = loadState();
   const previousLevel = lastLevel ?? state.level;
   const levelledUp = state.level > previousLevel;
@@ -80,11 +92,7 @@ function showLiveReward(detail) {
       summary.innerHTML = `<div class="gamification-reward-head"><strong>REWARD SUMMARY</strong><span class="gamification-xp-earned">+${reward} XP</span></div><div class="gamification-reward-grid"><div class="gamification-reward-stat"><span>Daily goal</span><strong>${Math.min(daily.xp, DAILY_XP_GOAL)} / ${DAILY_XP_GOAL} XP${daily.goalCompleted ? " · Complete" : ""}</strong></div><div class="gamification-reward-stat"><span>Streak</span><strong>🔥 ${state.streak} day${state.streak === 1 ? "" : "s"}</strong></div><div class="gamification-reward-stat"><span>Player level</span><strong>Level ${state.level}${levelledUp ? " · Level up" : ""}</strong></div></div>${levelledUp ? `<div class="gamification-milestone" role="status">Level increased to ${state.level}. ${levelProgress.current} / ${levelProgress.total} XP toward the next level.</div>` : ""}${daily.goalCompleted ? `<div class="gamification-milestone" role="status">Daily goal complete — ${daily.xp} XP earned today. You can keep learning.</div>` : ""}${milestoneText.map((item) => `<div class="gamification-milestone" role="status">Milestone unlocked: ${item}</div>`).join("")}`;
     }
   } else {
-    const live = $(".gamification-live") || document.body.appendChild(Object.assign(document.createElement("div"), { className: "gamification-live", hidden: true, role: "status", ariaLive: "polite" }));
-    live.innerHTML = `<strong>Mission complete · +${reward} XP</strong>${levelledUp ? `Level increased to ${state.level}. ` : ""}🔥 ${state.streak} day streak · ${daily.xp}/${DAILY_XP_GOAL} daily XP.`;
-    live.hidden = false;
-    clearTimeout(rewardTimer);
-    rewardTimer = setTimeout(() => { live.hidden = true; }, 2600);
+    showRewardToast(state, reward, levelledUp, milestoneText);
   }
   lastLevel = state.level;
   lastAchievements = new Set(state.achievements);
@@ -96,7 +104,7 @@ function init() {
   setTimeout(renderHome, 0);
   window.addEventListener("ailearn-state-updated", renderHome);
   window.addEventListener("ailearn-gamification-updated", (event) => {
-    showLiveReward(event.detail || {});
+    showMissionReward(event.detail || {});
     renderHome();
   });
 }
