@@ -29,20 +29,142 @@ export const MILESTONE_DEFINITIONS = [
   ["milestone-30-day-streak", "30-day streak"],
 ];
 
-export function getMeaningfulAchievements(state, masteryLevels) {
+export function evaluateMeaningfulAchievements(state, masteryLevels) {
   const completedPaths = masteryLevels.filter((level) => level.complete).length;
   const perfectChallenges = Object.values(state.challengeScores || {}).filter((score) => Number(score) === 100).length;
-  const eligible = new Set();
+  const conditions = {
+    "foundations-complete": masteryLevels[0]?.complete,
+    "llm-fundamentals-complete": masteryLevels[1]?.complete,
+    "prompt-architect": masteryLevels[2]?.complete,
+    "application-architect": masteryLevels[3]?.complete,
+    "local-ai-builder": masteryLevels[4]?.complete,
+    "vector-search-architect": masteryLevels[5]?.complete,
+    "rag-builder": masteryLevels[6]?.complete,
+    "agent-engineer": masteryLevels[7]?.complete,
+    "memory-planning-architect": masteryLevels[8]?.complete,
+    "mcp-architect": masteryLevels[9]?.complete,
+    "orchestration-architect": masteryLevels[10]?.complete,
+    "advanced-agentic-architect": masteryLevels[11]?.complete,
+    "ai-explorer": completedPaths >= 5,
+    "breadth-builder": completedPaths >= 8,
+    "perfect-challenge": perfectChallenges >= 1,
+    "challenge-specialist": perfectChallenges >= 3,
+    "full-journey": completedPaths === masteryLevels.length,
+  };
+  return Object.entries(conditions).filter(([, eligible]) => eligible).map(([id]) => id);
+}
 
-  masteryLevels.forEach((level) => {
-    if (level.complete) eligible.add(MEANINGFUL_ACHIEVEMENTS[level.id - 1]?.[0]);
-  });
-
-  if (completedPaths >= 5) eligible.add("ai-explorer");
-  if (completedPaths >= 8) eligible.add("breadth-builder");
-  if (perfectChallenges >= 1) eligible.add("perfect-challenge");
-  if (perfectChallenges >= 3) eligible.add("challenge-specialist");
-  if (completedPaths === masteryLevels.length) eligible.add("full-journey");
-
-  return [...eligible].filter(Boolean);
+export function evaluateLegacyAchievements(state, lessons) {
+  const completed = (id) => state.completedLessons.includes(id);
+  const completedAll = (ids) => ids.every(completed);
+  const countCompleted = (prefix) => state.completedLessons.filter((id) => id.startsWith(prefix)).length;
+  const achievementChecks = [
+    ["first-step", state.completedLessons.length >= 1],
+    ["curious-mind", state.completedLessons.length >= 3],
+    ["ai-explorer", completedAll(["ai", "genai", "llm", "apps", "usecases"])],
+    ["token-tamer", completed("llm-03")],
+    ["attention-seeker", completed("llm-05")],
+    ["model-thinker", completed("llm-07")],
+    ["llm-initiate", countCompleted("llm-") >= 9],
+    ["prompt-apprentice", countCompleted("prompt-") >= 3],
+    ["context-master", completed("prompt-07")],
+    ["example-builder", completed("prompt-05")],
+    ["prompt-refiner", completed("prompt-08")],
+    ["prompt-engineer", countCompleted("prompt-") >= 10],
+    ["api-explorer", completed("app-01")],
+    ["message-architect", completed("app-02")],
+    ["json-navigator", completed("app-04")],
+    ["context-keeper", completed("app-05")],
+    ["stream-rider", completed("app-06")],
+    ["llm-builder", completed("app-08")],
+    ["request-debugger", completed("app-09")],
+    ["llm-application-architect", completedAll(["app-01","app-02","app-03","app-04","app-05","app-06","app-07","app-08","app-09","app-10"])],
+    ["model-explorer", completed("local-01")],
+    ["open-weight-detective", completed("local-02")],
+    ["model-hub-navigator", completed("local-03")],
+    ["inference-initiate", completed("local-04")],
+    ["cloud-local-strategist", completed("local-05")],
+    ["hardware-scout", completed("local-06")],
+    ["quantization-explorer", completed("local-07")],
+    ["local-ai-explorer", completed("local-08")],
+    ["local-ai-builder", completed("local-09")],
+    ["open-source-ai-architect", completed("local-10")],
+    ["embedding-explorer", completed("embed-01")],
+    ["vector-thinker", completed("embed-02")],
+    ["dimension-explorer", completed("embed-03")],
+    ["similarity-seeker", completed("embed-04")],
+    ["cosine-navigator", completed("embed-05")],
+    ["semantic-searcher", completed("embed-06")],
+    ["chunk-master", completed("embed-07")],
+    ["vector-vault", completed("embed-08")],
+    ["search-engine-builder", completed("embed-09")],
+    ["vector-search-architect", completed("embed-10")],
+    ["rag-rookie", completed("rag-01")],
+    ["retrieval-thinker", completed("rag-02")],
+    ["pipeline-mapper", completed("rag-03")],
+    ["knowledge-ingestor", completed("rag-04")],
+    ["retrieval-specialist", completed("rag-05")],
+    ["grounding-guardian", completed("rag-06")],
+    ["rag-debugger", completed("rag-07")],
+    ["rag-builder", completed("rag-08")],
+    ["mini-rag-engineer", completed("rag-09")],
+    ["rag-architect", completed("rag-10")],
+    ["agent-initiate", completed("agent-01")],
+    ["architecture-detective", completed("agent-02")],
+    ["tool-collector", completed("agent-03")],
+    ["tool-caller", completed("agent-04")],
+    ["agent-loop-master", completed("agent-05")],
+    ["planning-apprentice", completed("agent-06")],
+    ["tool-selector", completed("agent-07")],
+    ["memory-explorer", completed("agent-08")],
+    ["agent-builder", completed("agent-09")],
+    ["agent-architect", completed("agent-10")],
+    ["agent9-state", completed("agent9-01")],
+    ["agent9-context", completed("agent9-02")],
+    ["agent9-memory", completed("agent9-03")],
+    ["agent9-manager", completed("agent9-04")],
+    ["agent9-decomposer", completed("agent9-05")],
+    ["agent9-checkpoint", completed("agent9-06")],
+    ["agent9-recovery", completed("agent9-07")],
+    ["agent9-strategist", completed("agent9-08")],
+    ["agent9-builder", completed("agent9-09")],
+    ["agent9-architect", completed("agent9-10")],
+    ["mcp-curious", completed("mcp-01")],
+    ["protocol-detective", completed("mcp-02")],
+    ["architecture-explorer", completed("mcp-03")],
+    ["capability-classifier", completed("mcp-04")],
+    ["discovery-scout", completed("mcp-05")],
+    ["schema-builder", completed("mcp-06")],
+    ["flow-navigator", completed("mcp-07")],
+    ["permission-guardian", completed("mcp-08")],
+    ["ecosystem-builder", completed("mcp-09")],
+    ["mcp-architect", completed("mcp-10")],
+    ["orch-curious", completed("orch-01")],
+    ["multi-agent-explorer", completed("orch-02")],
+    ["role-strategist", completed("orch-03")],
+    ["supervisor-scout", completed("orch-04")],
+    ["routing-navigator", completed("orch-05")],
+    ["workflow-strategist", completed("orch-06")],
+    ["state-coordinator", completed("orch-07")],
+    ["review-guardian", completed("orch-08")],
+    ["mission-controller", completed("orch-09")],
+    ["orchestration-architect", completed("orch-10")],
+    ["reliability-engineer", completed("agentic-01")],
+    ["planning-strategist", completed("agentic-02")],
+    ["verification-specialist", completed("agentic-03")],
+    ["contract-architect", completed("agentic-04")],
+    ["guardrail-guardian", completed("agentic-05")],
+    ["agent-evaluator", completed("agentic-06")],
+    ["trace-detective", completed("agentic-07")],
+    ["recovery-engineer", completed("agentic-08")],
+    ["system-optimizer", completed("agentic-09")],
+    ["agentic-system-architect", completed("agentic-10")],
+  ];
+  return achievementChecks.reduce((unlocked, [id, eligible]) => {
+    if (eligible && !state.achievements.includes(id)) {
+      state.achievements.push(id);
+      unlocked.push(id);
+    }
+    return unlocked;
+  }, []);
 }
