@@ -3,6 +3,7 @@ import "./journey.js";
 import "./gamification-ui.js";
 import "./celebration.js";
 import "./mastery.js";
+import "./achievement-feedback.js";
 
 if (!document.querySelector("link[data-celebration-styles]")) {
   const link = document.createElement("link");
