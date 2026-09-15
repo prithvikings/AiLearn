@@ -4,3 +4,8 @@
 /* Phase 1 cleanup: the ring is no longer useful while the current-focus message is the primary progress summary. */
 .hero-progress{grid-template-columns:1fr!important}
 .progress-ring{display:none!important}
+
+/* Phase 3 journey geometry: alternating mission cards connect back to the central path. */
+.journey-node:nth-child(odd) .journey-connector{transform:translateX(-100%)}
+.journey-node:nth-child(even) .journey-connector{transform:none}
+@media(max-width:760px){.journey-node:nth-child(odd) .journey-connector,.journey-node:nth-child(even) .journey-connector{transform:none}}
