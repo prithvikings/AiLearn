@@ -1,4 +1,4 @@
-import { foundationLessons, llmLessons, promptLessons, finalChallenge } from "./curriculum.js";
+import { levels as baseLevels, foundationLessons, llmLessons, promptLessons, finalChallenge } from "./curriculum.js";
 import { phase4Lessons } from "./phase4.js";
 import { phase5Lessons } from "./phase5.js";
 import { phase6Lessons } from "./phase6.js";
@@ -40,6 +40,7 @@ const LESSON_GROUPS = [
 ];
 
 export const curriculumLevels = LEVEL_METADATA.map(([id, title, description], index) => ({
+  ...(baseLevels[index] || {}),
   id,
   title,
   description,
@@ -47,8 +48,6 @@ export const curriculumLevels = LEVEL_METADATA.map(([id, title, description], in
   lessons: LESSON_GROUPS[index] || [],
 }));
 
-export const curriculumLevelById = Object.fromEntries(
-  curriculumLevels.map((level) => [level.id, level]),
-);
+export const curriculumLevelById = Object.fromEntries(curriculumLevels.map((level) => [level.id, level]));
 export const allLessons = curriculumLevels.flatMap((level) => level.lessons);
 export function getCurriculumLevel(levelId) { return curriculumLevelById[levelId] || null; }
